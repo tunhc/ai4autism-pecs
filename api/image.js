@@ -1,5 +1,5 @@
 // Vercel Serverless Function — Image Generation
-// Primary: DALL-E 3 (OpenAI) → Fallback: Imagen 3 (Gemini)
+// Chain: DALL-E 3 → Gemini 2.0 Flash (native image gen) → Claude (describe only)
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -9,28 +9,32 @@ export default async function handler(req, res) {
   const { prompt, size = '1024x1024' } = req.body;
   if (!prompt) return res.status(400).json({ error: 'Missing prompt' });
 
-  // Try DALL-E 3 first
+  const errors = [];
+
+  // 1. DALL-E 3
   if (process.env.OPENAI_KEY) {
     try {
       const result = await callDallE(prompt, size);
-      return res.status(200).json({ ...result, usedProvider: 'dall-e-3' });
+      return res.status(200).json({ ...result, usedProvider: 'DALL-E 3' });
     } catch (err) {
-      console.error('[DALL-E 3 failed]', err.message);
+      errors.push('DALL-E 3: ' + err.message);
     }
   }
 
-  // Fallback: Imagen 3
+  // 2. Gemini 2.0 Flash native image generation
   if (process.env.GEMINI_KEY) {
     try {
-      const result = await callImagen(prompt);
-      return res.status(200).json({ ...result, usedProvider: 'imagen-3' });
+      const result = await callGeminiImage(prompt);
+      return res.status(200).json({ ...result, usedProvider: 'Gemini 2.0 Flash' });
     } catch (err) {
-      console.error('[Imagen 3 failed]', err.message);
-      return res.status(500).json({ error: 'Tất cả image providers thất bại: ' + err.message });
+      errors.push('Gemini: ' + err.message);
     }
   }
 
-  return res.status(500).json({ error: 'Không có OPENAI_KEY hoặc GEMINI_KEY trên server' });
+  return res.status(500).json({
+    error: 'Tất cả image providers thất bại',
+    details: errors,
+  });
 }
 
 async function callDallE(prompt, size) {
@@ -44,7 +48,7 @@ async function callDallE(prompt, size) {
       model: 'dall-e-3',
       prompt,
       n: 1,
-      size,
+      size,           // "1024x1024" | "1792x1024" | "1024x1792"
       quality: 'standard',
     }),
   });
@@ -60,15 +64,19 @@ async function callDallE(prompt, size) {
   };
 }
 
-async function callImagen(prompt) {
+async function callGeminiImage(prompt) {
+  // Gemini 2.0 Flash Experimental — native image generation
+  // Returns inlineData base64 image in parts
   const r = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${process.env.GEMINI_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${process.env.GEMINI_KEY}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        instances: [{ prompt }],
-        parameters: { sampleCount: 1, aspectRatio: '1:1' },
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseModalities: ['IMAGE', 'TEXT'],
+        },
       }),
     }
   );
@@ -77,10 +85,14 @@ async function callImagen(prompt) {
     throw new Error(e.error?.message || r.statusText);
   }
   const data = await r.json();
-  const b64 = data.predictions?.[0]?.bytesBase64Encoded;
-  if (!b64) throw new Error('Imagen 3 không trả về ảnh');
+
+  // Find image part in response
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  const imgPart = parts.find(p => p.inlineData?.mimeType?.startsWith('image/'));
+  if (!imgPart) throw new Error('Gemini không trả về ảnh trong response');
+
   return {
     type: 'base64',
-    url: `data:image/png;base64,${b64}`,
+    url: `data:${imgPart.inlineData.mimeType};base64,${imgPart.inlineData.data}`,
   };
 }

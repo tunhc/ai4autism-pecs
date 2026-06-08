@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI4Autism — PECS Therapy Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #5BC8F5; --sun: #FFD93D; --grass: #6BCB77;
+  --coral: #FF6B6B; --lav: #C084FC; --peach: #FFAB76;
+  --mint: #4ECDC4; --navy: #1A1A2E;
+  --grade1-primary: #FF6B6B; --grade1-secondary: #FFAB76;
+  --grade2-primary: #6C63FF; --grade2-secondary: #C084FC;
+  --grade3-primary: #1A1A2E; --grade3-secondary: #6C63FF;
+  --card: #FFFFFF; --soft: #E8F4FD;
+  --border: rgba(91,200,245,0.25);
+  --shadow: 0 4px 20px rgba(91,200,245,0.18);
+  --radius: 18px;
+  --current-primary: #FF6B6B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: #F0F8FF; color: var(--navy); min-height: 100vh; }
+
+header {
+  background: linear-gradient(135deg, var(--current-primary), var(--sky));
+  padding: 14px 24px; display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12); transition: background 0.4s;
+}
+header h1 { font-family: 'Baloo 2', cursive; font-size: 1.5rem; color: #fff; letter-spacing: -0.5px; }
+header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.btn-settings {
+  background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 36px; height: 36px;
+  font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.btn-settings:hover { background: rgba(255,255,255,0.35); }
+
+.grade-tabs { display: flex; gap: 8px; background: var(--card); padding: 10px 24px; border-bottom: 2px solid var(--border); }
+.grade-tab {
+  padding: 8px 20px; border-radius: 40px; border: 2px solid transparent;
+  font-family: 'Baloo 2', cursive; font-weight: 600; font-size: 0.88rem;
+  cursor: pointer; transition: all 0.2s; background: var(--soft);
+}
+.grade-tab.g1 { color: var(--grade1-primary); }
+.grade-tab.g2 { color: var(--grade2-primary); }
+.grade-tab.g3 { color: var(--grade3-primary); }
+.grade-tab.active.g1 { background: var(--grade1-primary); color: #fff; border-color: var(--grade1-primary); }
+.grade-tab.active.g2 { background: var(--grade2-primary); color: #fff; border-color: var(--grade2-primary); }
+.grade-tab.active.g3 { background: var(--grade3-primary); color: #fff; border-color: var(--grade3-primary); }
+
+.main { display: grid; grid-template-columns: 260px 1fr 300px; gap: 16px; padding: 16px 24px; align-items: start; }
+@media (max-width: 768px) { .main { grid-template-columns: 1fr; } }
+
+.panel { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); overflow-y: auto; max-height: calc(100vh - 140px); }
+.panel-sticky { position: sticky; top: 16px; }
+.panel-title { font-family: 'Baloo 2', cursive; font-size: 0.95rem; font-weight: 700; margin-bottom: 12px; color: var(--navy); display: flex; align-items: center; gap: 6px; }
+
+.pecs-group-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #888; margin: 10px 0 6px; }
+.pecs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pecs-card {
+  background: var(--soft); border-radius: 12px; padding: 8px 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: grab; border: 2px solid transparent; transition: all 0.15s; user-select: none;
+}
+.pecs-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.pecs-card:active { transform: scale(0.96); cursor: grabbing; }
+.pecs-card.dragging { opacity: 0.4; }
+.pecs-icon { font-size: 26px; line-height: 1; }
+.pecs-label { font-size: 9px; font-weight: 700; text-align: center; line-height: 1.2; }
+
+.board-zone {
+  min-height: 80px; border: 2.5px dashed var(--border); border-radius: 14px;
+  padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  transition: all 0.2s; position: relative;
+}
+.board-zone.drag-over { border-color: var(--current-primary); background: rgba(91,200,245,0.06); }
+.board-zone-empty { font-size: 0.8rem; color: #aaa; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); white-space: nowrap; pointer-events: none; }
+.dropped-card {
+  background: white; border-radius: 10px; padding: 7px 10px;
+  display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative;
+  animation: popIn 0.25s ease; border: 2px solid var(--border);
+}
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.dropped-card .drop-icon { font-size: 20px; }
+.dropped-card .remove-btn {
+  position: absolute; top: -6px; right: -6px; background: var(--coral); color: white;
+  border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; line-height: 18px;
+  cursor: pointer; display: none; align-items: center; justify-content: center; padding: 0; z-index: 2;
+}
+.dropped-card:hover .remove-btn { display: flex; }
+.board-arrow { font-size: 18px; color: #aaa; }
+.board-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+
+.preset-btn {
+  background: var(--soft); border: none; border-radius: 8px; padding: 6px 12px;
+  font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--navy);
+}
+.preset-btn:hover { background: var(--current-primary); color: white; }
+
+.ai-btn {
+  padding: 9px 14px; border: none; border-radius: 10px; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.ai-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.ai-btn.claude { background: #FF6B6B; color: white; }
+.ai-btn.gemini { background: #5BC8F5; color: white; }
+.ai-btn.openai { background: #6BCB77; color: white; }
+.ai-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.prompt-box {
+  background: var(--navy); color: #A8EDCF; font-family: monospace;
+  border-radius: 10px; padding: 12px; font-size: 0.78rem; line-height: 1.6;
+  white-space: pre-wrap; max-height: 160px; overflow-y: auto; margin-bottom: 10px;
+}
+.result-box {
+  background: var(--soft); border-radius: 10px; padding: 14px;
+  font-size: 0.85rem; line-height: 1.7; min-height: 80px; white-space: pre-wrap;
+  border: 2px solid var(--border);
+}
+.result-box.loading { display: flex; align-items: center; justify-content: center; gap: 8px; color: #888; }
+
+.kw-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.kw-tag {
+  padding: 6px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; border: 2px solid transparent; transition: all 0.15s; user-select: none;
+  display: flex; align-items: center; gap: 5px;
+}
+.kw-tag.selected { filter: brightness(1.15); transform: scale(1.04); border-color: rgba(0,0,0,0.15); }
+.kw-tag:not(.selected) { opacity: 0.7; }
+.kw-tag:hover { opacity: 1; }
+
+.story-arc { display: flex; flex-direction: column; gap: 10px; }
+.arc-zone { border-radius: 14px; padding: 10px; border: 2.5px dashed; }
+.arc-zone.challenge { border-color: #FF6B6B; background: rgba(255,107,107,0.04); }
+.arc-zone.solution  { border-color: #6BCB77; background: rgba(107,203,119,0.04); }
+.arc-zone.result-arc{ border-color: #FFD93D; background: rgba(255,217,61,0.04); }
+.arc-zone.drag-over { background: rgba(91,200,245,0.08); border-style: solid; }
+.arc-label { font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
+
+.branch-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+.branch-tab { padding: 6px 16px; border-radius: 20px; border: 2px solid var(--border); font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; background: var(--soft); }
+.branch-tab.active { background: var(--grade3-primary); color: white; border-color: var(--grade3-primary); }
+.branch-editor { display: none; }
+.branch-editor.active { display: block; }
+.branch-textarea {
+  width: 100%; min-height: 200px; font-family: monospace; font-size: 0.78rem;
+  border: 2px solid var(--border); border-radius: 10px; padding: 10px;
+  resize: vertical; background: #F8FAFF; line-height: 1.6; outline: none;
+}
+.branch-textarea:focus { border-color: var(--grade3-secondary); }
+.style-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px; }
+.style-opt { padding: 6px 4px; border-radius: 8px; border: 2px solid var(--border); font-size: 0.76rem; text-align: center; cursor: pointer; background: var(--soft); transition: all 0.15s; }
+.style-opt.selected { border-color: var(--grade3-secondary); background: rgba(108,99,255,0.1); }
+
+.contribution-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; margin-top: 8px; }
+.contrib-cell { aspect-ratio: 1; border-radius: 3px; background: #e0e0e0; transition: all 0.3s; cursor: default; position: relative; }
+.contrib-cell.filled { background: var(--grass); }
+.contrib-cell.filled:hover { transform: scale(1.3); }
+.contrib-cell.filled::after { content: attr(data-tip); position: absolute; bottom: calc(100%+4px); left: 50%; transform: translateX(-50%); background: var(--navy); color: white; font-size: 0.68rem; padding: 3px 7px; border-radius: 6px; white-space: nowrap; z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+.contrib-cell.filled:hover::after { opacity: 1; }
+.contrib-count { font-size: 0.8rem; color: #888; margin-top: 6px; }
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  background: white; border-radius: 22px; padding: 28px; width: 380px; max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: translateY(20px); transition: transform 0.25s;
+}
+.modal-backdrop.open .modal-box { transform: translateY(0); }
+.modal-title { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.key-row { margin-bottom: 14px; }
+.key-row label { font-size: 0.82rem; font-weight: 700; margin-bottom: 5px; display: block; }
+.key-input-wrap { display: flex; gap: 6px; }
+.key-input { flex: 1; padding: 8px 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.82rem; font-family: monospace; outline: none; transition: border-color 0.15s; }
+.key-input:focus { border-color: var(--sky); }
+.key-toggle { padding: 8px 12px; border: none; border-radius: 10px; cursor: pointer; font-size: 0.82rem; background: var(--soft); }
+.key-save { padding: 8px 12px; border: none; border-radius: 10px; cursor: pointer; font-size: 0.82rem; font-weight: 600; background: var(--grass); color: white; transition: filter 0.15s; }
+.key-save:hover { filter: brightness(1.1); }
+.modal-footer { display: flex; justify-content: space-between; margin-top: 18px; align-items: center; flex-wrap: wrap; gap: 8px; }
+.modal-info { font-size: 0.76rem; color: #888; }
+.btn-clear { background: #fee; border: none; border-radius: 8px; padding: 6px 14px; color: var(--coral); font-weight: 700; font-size: 0.82rem; cursor: pointer; }
+.btn-confirm { background: var(--grade2-primary); color: white; border: none; border-radius: 10px; padding: 9px 20px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+.provider-select { width: 100%; padding: 8px 12px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.82rem; margin-top: 10px; outline: none; }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--navy); color: white; padding: 10px 22px; border-radius: 30px;
+  font-size: 0.85rem; font-weight: 600; z-index: 2000;
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+.story-textarea {
+  width: 100%; min-height: 70px; border: 2px solid var(--border); border-radius: 10px;
+  padding: 9px 12px; font-family: 'Nunito', sans-serif; font-size: 0.84rem; resize: vertical; outline: none;
+}
+.story-textarea:focus { border-color: var(--grade2-primary); }
+
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<header id="mainHeader">
+  <h1>🌈 AI4Autism <span>PECS Therapy Demo</span></h1>
+  <div class="header-right">
+    <div style="font-size:0.8rem;color:rgba(255,255,255,0.9)">🏆 <span id="contribCount">0</span> stories</div>
+    <span style="font-size:0.75rem;color:rgba(255,255,255,0.7)">🔒 Keys on server</span>
+  </div>
+</header>
+
+<div class="grade-tabs">
+  <button class="grade-tab g1 active" onclick="switchGrade(1)">🎨 Tiểu học (L1–5)</button>
+  <button class="grade-tab g2" onclick="switchGrade(2)">🌊 THCS (L6–9)</button>
+  <button class="grade-tab g3" onclick="switchGrade(3)">🎬 THPT (L10–12)</button>
+</div>
+
+<!-- ===== GRADE 1 ===== -->
+<div id="grade1" class="main">
+  <div class="panel panel-sticky">
+    <div class="panel-title">🃏 Thẻ PECS</div>
+    <div id="pecsPanel"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">🖼️ Bảng kịch bản</div>
+    <div id="boardZone" class="board-zone"
+      ondragover="onDragOver(event,'board')"
+      ondrop="onDrop(event,'board')"
+      ondragleave="onDragLeave(event)">
+      <span class="board-zone-empty">Kéo thẻ vào đây hoặc click thẻ để thêm ➜</span>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="panel-title" style="font-size:0.82rem">⚡ Bài tập nhanh</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <button class="preset-btn" onclick="loadPreset(0)">😊 Chia sẻ đồ chơi</button>
+        <button class="preset-btn" onclick="loadPreset(1)">😠 Hít thở bình tĩnh</button>
+        <button class="preset-btn" onclick="loadPreset(2)">🙋 Xin giúp đỡ</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="panel-title" style="font-size:0.82rem">📝 Prompt</div>
+    <div id="g1Prompt" class="prompt-box">— Chưa có thẻ nào —</div>
+
+    <div class="board-actions">
+      <button class="ai-btn claude" id="btnStory" onclick="callAI('story')">✍️ Social Story</button>
+      <button class="ai-btn gemini" id="btnImage" onclick="callAI('image')">🖼️ Mô tả ảnh</button>
+      <button class="ai-btn openai" id="btnScenario" onclick="callAI('scenario')">🎬 Kịch bản</button>
+      <button class="ai-btn" style="background:#C084FC;color:white" onclick="clearBoard()">🗑️ Xoá</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">✨ Kết quả AI</div>
+    <div id="g1Result" class="result-box">Gọi AI để xem kết quả tại đây...</div>
+    <div class="divider"></div>
+    <div class="panel-title">📊 Tiến độ học tập</div>
+    <div id="contribGrid1" class="contribution-grid"></div>
+    <div class="contrib-count">Tổng: <b id="totalContrib1">0</b> stories đã tạo</div>
+  </div>
+</div>
+
+<!-- ===== GRADE 2 ===== -->
+<div id="grade2" class="main" style="display:none">
+  <div class="panel panel-sticky">
+    <div class="panel-title">🏷️ Từ khoá Neurodiversity</div>
+    <div id="kwPanel" class="kw-grid"></div>
+    <div class="divider"></div>
+    <div class="panel-title" style="font-size:0.82rem">⚡ Bài tập nhanh</div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <button class="preset-btn" onclick="loadG2Preset(0)">🌊 Vượt tiếng ồn</button>
+      <button class="preset-btn" onclick="loadG2Preset(1)">🔮 Hyperfocus</button>
+      <button class="preset-btn" onclick="loadG2Preset(2)">😰 Kết bạn mới</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">📖 Cấu trúc câu chuyện</div>
+    <div class="story-arc">
+      <div class="arc-zone challenge"
+        ondragover="onDragOver(event,'challenge')"
+        ondrop="onDrop(event,'challenge')"
+        ondragleave="onDragLeave(event)">
+        <div class="arc-label" style="color:#FF6B6B">⚡ Thách thức — kéo từ khoá vào đây</div>
+        <div id="arcChallenge" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px"></div>
+      </div>
+      <div class="arc-zone solution"
+        ondragover="onDragOver(event,'solution')"
+        ondrop="onDrop(event,'solution')"
+        ondragleave="onDragLeave(event)">
+        <div class="arc-label" style="color:#6BCB77">💡 Giải pháp</div>
+        <div id="arcSolution" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px"></div>
+      </div>
+      <div class="arc-zone result-arc"
+        ondragover="onDragOver(event,'arcresult')"
+        ondrop="onDrop(event,'arcresult')"
+        ondragleave="onDragLeave(event)">
+        <div class="arc-label" style="color:#c0970f">🌟 Kết quả</div>
+        <div id="arcResult" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="panel-title" style="font-size:0.82rem">💬 Câu chuyện của bạn (tuỳ chọn)</div>
+      <textarea id="userStory" class="story-textarea" placeholder="Chia sẻ trải nghiệm của bạn bằng tiếng Việt..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+    <div class="panel-title" style="font-size:0.82rem">📝 Prompt</div>
+    <div id="g2Prompt" class="prompt-box">— Chưa chọn từ khoá —</div>
+
+    <div class="board-actions">
+      <button class="ai-btn claude" onclick="callAI2('podcast')">🎙️ Podcast</button>
+      <button class="ai-btn gemini" onclick="callAI2('reel')">📱 Reel Caption</button>
+      <button class="ai-btn openai" onclick="callAI2('sensory')">🌊 Sensory</button>
+      <button class="ai-btn" style="background:#C084FC;color:white" onclick="clearG2()">🗑️ Xoá</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">✨ Kết quả AI</div>
+    <div id="g2Result" class="result-box">Gọi AI để xem kết quả tại đây...</div>
+    <div class="divider"></div>
+    <div class="panel-title">📊 Tiến độ học tập</div>
+    <div id="contribGrid2" class="contribution-grid"></div>
+    <div class="contrib-count">Tổng: <b id="totalContrib2">0</b> stories đã tạo</div>
+  </div>
+</div>
+
+<!-- ===== GRADE 3 ===== -->
+<div id="grade3" class="main" style="display:none">
+  <div class="panel panel-sticky">
+    <div class="panel-title">🎨 Phong cách Animation</div>
+    <div id="styleGrid" class="style-grid"></div>
+
+    <div class="panel-title">👤 Nhân vật</div>
+    <textarea id="charDesc" class="story-textarea" style="min-height:60px" placeholder="VD: An, 17t, yêu thiên văn và vẽ tranh..."></textarea>
+
+    <div class="divider"></div>
+    <div class="panel-title">⚡ Bài tập mẫu</div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <button class="preset-btn" onclick="loadG3Preset(0)">🎥 Phim tài liệu Neurodiversity</button>
+      <button class="preset-btn" onclick="loadG3Preset(1)">🕹️ Game Dev hướng nghiệp</button>
+      <button class="preset-btn" onclick="loadG3Preset(2)">📱 TikTok nhận thức</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">🌿 Branch Script Editor</div>
+    <div class="branch-tabs">
+      <button class="branch-tab active" onclick="switchBranch('A')">Branch A</button>
+      <button class="branch-tab" onclick="switchBranch('B')">Branch B</button>
+      <button class="branch-tab" onclick="switchBranch('C')">Branch C</button>
+    </div>
+    <div id="branchA" class="branch-editor active">
+      <textarea class="branch-textarea" id="branchAText" placeholder='{"branch":"A","title":"...","challenge":"...","choice":"...","outcome":"positive","visual_style":"2D animation","mood":"lo âu → tự tin","duration_seconds":20,"prompt_en":"..."}'></textarea>
+    </div>
+    <div id="branchB" class="branch-editor">
+      <textarea class="branch-textarea" id="branchBText" placeholder='{"branch":"B",...}'></textarea>
+    </div>
+    <div id="branchC" class="branch-editor">
+      <textarea class="branch-textarea" id="branchCText" placeholder='{"branch":"C",...}'></textarea>
+    </div>
+
+    <div class="divider"></div>
+    <div class="panel-title" style="font-size:0.82rem">📝 Master Prompt</div>
+    <div id="g3Prompt" class="prompt-box">— Điền nội dung branches —</div>
+
+    <div class="board-actions">
+      <button class="ai-btn claude" onclick="callAI3('script')">📜 Kịch bản phim</button>
+      <button class="ai-btn gemini" onclick="callAI3('storyboard')">🎞️ Storyboard</button>
+      <button class="ai-btn openai" onclick="callAI3('voiceover')">🎤 Voiceover</button>
+      <button class="ai-btn" style="background:#888;color:white" onclick="buildG3Prompt()">🔄 Build</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">✨ Kết quả AI</div>
+    <div id="g3Result" class="result-box">Gọi AI để xem kết quả tại đây...</div>
+    <div class="divider"></div>
+    <div class="panel-title">📊 Tiến độ học tập</div>
+    <div id="contribGrid3" class="contribution-grid"></div>
+    <div class="contrib-count">Tổng: <b id="totalContrib3">0</b> stories đã tạo</div>
+  </div>
+</div>
+
+<!-- Modal đã bỏ — API keys quản lý qua .env trên server -->
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ===== DATA =====
+const PECS = [
+  {id:"happy",type:"emotion",icon:"😊",label:"Vui vẻ",en:"a happy autistic child smiling",color:"#FF6B6B"},
+  {id:"sad",type:"emotion",icon:"😢",label:"Buồn bã",en:"a sad child feeling overwhelmed",color:"#FF6B6B"},
+  {id:"calm",type:"emotion",icon:"😌",label:"Bình tĩnh",en:"a calm and peaceful autistic child",color:"#FF6B6B"},
+  {id:"angry",type:"emotion",icon:"😠",label:"Tức giận",en:"an autistic child feeling frustrated",color:"#FF6B6B"},
+  {id:"proud",type:"emotion",icon:"🥳",label:"Tự hào",en:"an autistic child feeling proud",color:"#FF6B6B"},
+  {id:"scared",type:"emotion",icon:"😨",label:"Sợ hãi",en:"a scared autistic child feeling anxious",color:"#FF6B6B"},
+  {id:"school",type:"place",icon:"🏫",label:"Trường học",en:"at a bright elementary school classroom",color:"#5BC8F5"},
+  {id:"home",type:"place",icon:"🏠",label:"Ở nhà",en:"at a cozy home environment",color:"#5BC8F5"},
+  {id:"park",type:"place",icon:"🌳",label:"Sân chơi",en:"at a colorful playground outdoors",color:"#5BC8F5"},
+  {id:"therapy",type:"place",icon:"🛋️",label:"Phòng trị liệu",en:"in a cozy therapy room with soft lighting",color:"#5BC8F5"},
+  {id:"share",type:"action",icon:"🤝",label:"Chia sẻ",en:"sharing a toy with a friend, positive behavior",color:"#6BCB77"},
+  {id:"draw",type:"action",icon:"🎨",label:"Vẽ tranh",en:"drawing and painting as creative expression",color:"#6BCB77"},
+  {id:"breathe",type:"action",icon:"🌬️",label:"Hít thở",en:"deep breathing exercise to calm down",color:"#6BCB77"},
+  {id:"ask",type:"action",icon:"🙋",label:"Xin giúp đỡ",en:"raising hand to ask teacher for help",color:"#6BCB77"},
+  {id:"boy",type:"person",icon:"👦",label:"Bé trai",en:"autistic boy age 7, curious and kind",color:"#FFAB76"},
+  {id:"girl",type:"person",icon:"👧",label:"Bé gái",en:"autistic girl age 7, gentle and creative",color:"#FFAB76"},
+  {id:"teacher",type:"person",icon:"👩‍🏫",label:"Giáo viên",en:"kind and patient teacher with a warm smile",color:"#FFAB76"},
+  {id:"friend",type:"person",icon:"👫",label:"Bạn bè",en:"friendly classmates playing together",color:"#FFAB76"},
+];
+
+const KEYWORDS = [
+  {id:"sensory",label:"Sensory Overload",emoji:"🌊",color:"#5BC8F5",en:"sensory overload, overwhelmed by stimuli"},
+  {id:"hyperfocus",label:"Hyperfocus",emoji:"🔮",color:"#C084FC",en:"hyperfocus state of deep concentration"},
+  {id:"meltdown",label:"Meltdown",emoji:"⚡",color:"#FF6B6B",en:"emotional meltdown and overwhelm"},
+  {id:"shutdown",label:"Shutdown",emoji:"🌙",color:"#94a3b8",en:"shutdown and withdrawal response"},
+  {id:"stimming",label:"Stimming",emoji:"🎵",color:"#6BCB77",en:"self-stimulatory behavior for regulation"},
+  {id:"headphone",label:"Tai nghe chống ồn",emoji:"🎧",color:"#6BCB77",en:"noise-canceling headphones as coping tool"},
+  {id:"routine",label:"Thói quen",emoji:"📅",color:"#5BC8F5",en:"importance of routine and predictability"},
+  {id:"draw_feel",label:"Vẽ để giải tỏa",emoji:"🎨",color:"#C084FC",en:"drawing and art as emotional release"},
+  {id:"joy",label:"Thăng hoa",emoji:"✨",color:"#FFD93D",en:"joy and special interest excitement"},
+  {id:"anxiety",label:"Lo âu",emoji:"😰",color:"#FFAB76",en:"anxiety and worry from unpredictability"},
+  {id:"safe",label:"Cảm giác an toàn",emoji:"🫂",color:"#4ECDC4",en:"feeling safe and accepted by others"},
+  {id:"music",label:"Âm nhạc chữa lành",emoji:"🎶",color:"#FFD93D",en:"music as emotional regulation tool"},
+];
+
+const STYLES = [
+  {id:"2d",label:"🎨 Hoạt hình 2D",en:"bright 2D animation, colorful, child-friendly"},
+  {id:"pixar",label:"🎬 Pixar style",en:"Pixar-style 3D, expressive characters"},
+  {id:"manga",label:"🌸 Manga/Anime",en:"anime manga art style"},
+  {id:"watercolor",label:"🎨 Màu nước",en:"soft watercolor illustration"},
+  {id:"documentary",label:"📹 Tài liệu",en:"documentary style, real-world"},
+  {id:"minimalist",label:"◻️ Tối giản",en:"minimalist clean design"},
+];
+
+const G1_PRESETS=[["happy","school","share","friend"],["angry","therapy","breathe"],["boy","school","ask","teacher"]];
+
+const G2_PRESETS=[
+  {c:["sensory","meltdown"],s:["headphone","breathe"],r:["draw_feel","safe"]},
+  {c:["meltdown","anxiety"],s:["routine","stimming"],r:["hyperfocus","joy"]},
+  {c:["anxiety"],s:["safe","music"],r:["joy","safe"]},
+];
+
+const G3_PRESETS=[
+  {char:"An, 17 tuổi, yêu thiên văn và vẽ tranh, học sinh THPT tự kỷ",
+   a:'{"branch":"A","title":"An chia sẻ story trên YouTube","challenge":"Bị hiểu lầm về hành vi tự kỷ","choice":"Tạo video kể câu chuyện của mình","outcome":"positive","visual_style":"watercolor","mood":"cô đơn → kết nối","duration_seconds":25,"prompt_en":"A 17-year-old autistic girl creating artwork under a starry sky, soft watercolor style, warm lighting, empowering mood"}',
+   b:'{"branch":"B","title":"An giữ im lặng","challenge":"Áp lực từ kỳ vọng xã hội","choice":"Rút vào thế giới vẽ tranh riêng","outcome":"reflective","visual_style":"watercolor","mood":"áp lực → tĩnh lặng","duration_seconds":20,"prompt_en":"Autistic teenager painting alone in dim room, introspective watercolor scene, bittersweet atmosphere"}',
+   c:'{"branch":"C","title":"An tìm cộng đồng","challenge":"Cảm giác khác biệt","choice":"Gia nhập cộng đồng nghệ thuật neurodiversity","outcome":"positive","visual_style":"2D animation","mood":"cô đơn → thuộc về","duration_seconds":30,"prompt_en":"Group of diverse neurodiverse teens creating art together, bright 2D animation, celebrating differences"}'},
+  {char:"Minh, 16 tuổi, đam mê pixel art và hyperfocus khi lập trình game",
+   a:'{"branch":"A","title":"Minh tạo game indie","challenge":"Khó tập trung trong lớp","choice":"Dùng hyperfocus tạo game về trải nghiệm tự kỷ","outcome":"positive","visual_style":"2D animation","mood":"phân tâm → hyperfocus","duration_seconds":25,"prompt_en":"Teen programmer in deep focus creating pixel art game, vibrant 2D style, screen glowing with creativity"}',
+   b:'{"branch":"B","title":"Minh chia sẻ kỹ năng","challenge":"Bị coi thường khả năng","choice":"Dạy lập trình cho bạn cùng lớp","outcome":"positive","visual_style":"minimalist","mood":"bị đánh giá thấp → tự hào","duration_seconds":20,"prompt_en":"Teen teaching coding to peers, minimalist clean style, confident posture, warm classroom"}',
+   c:'{"branch":"C","title":"Minh tham gia game jam","challenge":"Lo âu xã hội","choice":"Tham gia game jam với đội nhóm","outcome":"reflective","visual_style":"pixar","mood":"lo âu → thích nghi","duration_seconds":28,"prompt_en":"Anxious teen joining game jam team, Pixar-style expressive characters, journey from fear to belonging"}'},
+  {char:"Linh, 18 tuổi, TikToker 50K followers về neurodiversity awareness",
+   a:'{"branch":"A","title":"Linh viral với sự thật","challenge":"Áp lực fake authenticity","choice":"Làm video thật về meltdown của mình","outcome":"positive","visual_style":"documentary","mood":"áp lực → can đảm","duration_seconds":30,"prompt_en":"Young woman filming authentic documentary about autism, raw documentary style, honest and empowering"}',
+   b:'{"branch":"B","title":"Linh hợp tác campaign","challenge":"Brand chưa hiểu neurodiversity","choice":"Thiết kế campaign neurodiversity","outcome":"positive","visual_style":"minimalist","mood":"thách thức → thay đổi","duration_seconds":25,"prompt_en":"Young activist presenting neurodiversity campaign, minimalist corporate meets personal style"}',
+   c:'{"branch":"C","title":"Linh làm sách ảnh","challenge":"Muốn để lại di sản","choice":"Kết hợp TikTok content thành photobook","outcome":"positive","visual_style":"watercolor","mood":"kỹ thuật số → hữu hình","duration_seconds":20,"prompt_en":"Young creator holding handmade book of their story, soft watercolor backgrounds, legacy theme"}'},
+];
+
+// ===== STATE =====
+let boardCards=[];
+let g2Arc={challenge:[],solution:[],arcresult:[]};
+let g3Style='2d';
+let currentGrade=1;
+let draggingItem=null;
+let contributions=JSON.parse(localStorage.getItem('ai4a_contrib')||'[]');
+
+// ===== API — gọi server-side proxy, key nằm trong .env trên Vercel =====
+const api = {
+  async call(provider, prompt, opts={}) {
+    const {maxTokens=1024, system=''} = opts;
+    const r = await fetch('/api/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({provider, prompt, maxTokens, system}),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || r.statusText);
+    return data.text;
+  },
+  hasAnyKey() { return true; }, // keys ở server, luôn available
+};
+
+// ===== INIT =====
+function init(){
+  renderPecsPanel();
+  renderKwPanel();
+  renderStyleGrid();
+  renderAllGrids();
+}
+
+// ===== GRADE SWITCH =====
+function switchGrade(g){
+  currentGrade=g;
+  [1,2,3].forEach(n=>{
+    document.getElementById('grade'+n).style.display=n===g?'grid':'none';
+    document.querySelectorAll('.grade-tab')[n-1].classList.toggle('active',n===g);
+  });
+  const p={1:'#FF6B6B',2:'#6C63FF',3:'#1A1A2E'};
+  document.documentElement.style.setProperty('--current-primary',p[g]);
+}
+
+// ===== GRADE 1 =====
+function renderPecsPanel(){
+  const types=['emotion','place','action','person'];
+  const labels={emotion:'😊 Cảm xúc',place:'📍 Nơi chốn',action:'⚡ Hành động',person:'👤 Nhân vật'};
+  document.getElementById('pecsPanel').innerHTML=types.map(t=>{
+    const cards=PECS.filter(c=>c.type===t);
+    return `<div class="pecs-group-label">${labels[t]}</div>
+    <div class="pecs-grid">${cards.map(c=>`
+      <div class="pecs-card" draggable="true" data-id="${c.id}"
+        style="background:${c.color}22;border-color:${c.color}55"
+        ondragstart="onDragStart(event,'pecs','${c.id}')"
+        onclick="clickAddCard('${c.id}')"
+        role="button" aria-label="${c.label}" tabindex="0"
+        onkeydown="if(event.key==='Enter'||event.key===' ')clickAddCard('${c.id}')">
+        <span class="pecs-icon">${c.icon}</span>
+        <span class="pecs-label">${c.label}</span>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function clickAddCard(id){
+  const c=PECS.find(x=>x.id===id);
+  if(!c) return;
+  boardCards.push(c);
+  renderBoard();
+  updateG1Prompt();
+}
+
+function renderBoard(){
+  const zone=document.getElementById('boardZone');
+  if(!boardCards.length){zone.innerHTML='<span class="board-zone-empty">Kéo thẻ vào đây hoặc click thẻ để thêm ➜</span>';return;}
+  zone.innerHTML=boardCards.map((c,i)=>`
+    <div class="dropped-card" style="border-color:${c.color}55">
+      <span class="drop-icon">${c.icon}</span>
+      <span>${c.label}</span>
+      <button class="remove-btn" onclick="removeCard(${i})">×</button>
+    </div>${i<boardCards.length-1?'<span class="board-arrow">→</span>':''}`).join('');
+}
+
+function removeCard(i){boardCards.splice(i,1);renderBoard();updateG1Prompt();}
+
+function clearBoard(){
+  boardCards=[];renderBoard();
+  document.getElementById('g1Prompt').textContent='— Chưa có thẻ nào —';
+  document.getElementById('g1Result').textContent='Gọi AI để xem kết quả tại đây...';
+  document.getElementById('g1Result').className='result-box';
+}
+
+function updateG1Prompt(){
+  if(!boardCards.length){document.getElementById('g1Prompt').textContent='— Chưa có thẻ nào —';return;}
+  const p=boardCards.find(c=>c.type==='person');
+  const e=boardCards.find(c=>c.type==='emotion');
+  const pl=boardCards.find(c=>c.type==='place');
+  const a=boardCards.find(c=>c.type==='action');
+  document.getElementById('g1Prompt').textContent=
+`Create a short Social Story (5-7 sentences) in simple Vietnamese for an autistic child (Grade 1-5).
+Scene: ${p?p.en:'an autistic child'}, feeling ${e?e.en:'various emotions'}, ${pl?pl.en:'in a familiar setting'}, ${a?a.en:'doing positive activities'}.
+Style: bright 2D animation, child-friendly, positive and encouraging.
+Include: what the character feels → what they do → positive outcome.
+Output: tiếng Việt đơn giản, mỗi câu 1 dòng, kết thúc tích cực.`;
+}
+
+function loadPreset(i){
+  boardCards=G1_PRESETS[i].map(id=>PECS.find(c=>c.id===id)).filter(Boolean);
+  renderBoard();updateG1Prompt();showToast('✅ Đã tải bài tập mẫu!');
+}
+
+async function callAI(mode){
+  const prompt=document.getElementById('g1Prompt').textContent;
+  if(prompt.startsWith('—')){showToast('⚠️ Hãy thêm thẻ PECS trước!');return;}
+  const sfx={story:'\n\nOutput: 5-7 câu tiếng Việt đơn giản, mỗi câu 1 dòng, kết thúc tích cực.',
+    image:'\n\nOutput: Mô tả chi tiết scene để tạo animation (màu sắc, cảm xúc, bố cục) bằng tiếng Việt.',
+    scenario:'\n\nOutput: Kịch bản video 15-30s: cảnh mở, hành động chính, kết thúc tích cực. Tiếng Việt.'};
+  const prov={story:'claude',image:'gemini',scenario:'openai'};
+  await runAI('g1Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:800},
+    ['btnStory','btnImage','btnScenario']);
+}
+
+// ===== GRADE 2 =====
+function renderKwPanel(){
+  document.getElementById('kwPanel').innerHTML=KEYWORDS.map(k=>`
+    <div class="kw-tag" id="kw_${k.id}"
+      style="background:${k.color}22;border-color:${k.color}44;color:#333"
+      draggable="true"
+      ondragstart="onDragStart(event,'kw','${k.id}')"
+      onclick="toggleKw('${k.id}')">
+      ${k.emoji} ${k.label}
+    </div>`).join('');
+}
+
+function toggleKw(id){
+  const el=document.getElementById('kw_'+id);
+  el.classList.toggle('selected');
+  updateG2Prompt();
+}
+
+function clearG2(){
+  g2Arc={challenge:[],solution:[],arcresult:[]};
+  document.querySelectorAll('.kw-tag').forEach(el=>el.classList.remove('selected'));
+  renderArcZones();
+  document.getElementById('g2Prompt').textContent='— Chưa chọn từ khoá —';
+  document.getElementById('g2Result').textContent='Gọi AI để xem kết quả tại đây...';
+  document.getElementById('g2Result').className='result-box';
+  document.getElementById('userStory').value='';
+}
+
+function renderArcZones(){
+  [['challenge','arcChallenge'],['solution','arcSolution'],['arcresult','arcResult']].forEach(([zone,elId])=>{
+    const el=document.getElementById(elId);
+    el.innerHTML=g2Arc[zone].map(id=>{
+      const kw=KEYWORDS.find(k=>k.id===id);
+      if(!kw) return '';
+      return `<div class="dropped-card" style="border-color:${kw.color}55;font-size:0.78rem;padding:5px 8px">
+        <span>${kw.emoji}</span><span>${kw.label}</span>
+        <button class="remove-btn" onclick="removeArc('${zone}','${id}')">×</button>
+      </div>`;
+    }).join('');
+  });
+}
+
+function removeArc(zone,id){
+  g2Arc[zone]=g2Arc[zone].filter(x=>x!==id);
+  renderArcZones();updateG2Prompt();
+}
+
+function updateG2Prompt(){
+  const getEn=zone=>g2Arc[zone].map(id=>{const k=KEYWORDS.find(x=>x.id===id);return k?k.en:''}).filter(Boolean).join(', ');
+  const selectedKws=[...document.querySelectorAll('.kw-tag.selected')].map(el=>el.id.replace('kw_',''));
+  const challenge=getEn('challenge')||(selectedKws.length?selectedKws.map(id=>{const k=KEYWORDS.find(x=>x.id===id);return k?k.en:''}).join(', '):'');
+  if(!challenge){document.getElementById('g2Prompt').textContent='— Chưa chọn từ khoá —';return;}
+  const userText=document.getElementById('userStory')?.value||'';
+  document.getElementById('g2Prompt').textContent=
+`Create a personal story script (Podcast/Reel, 60-90 seconds) for a Vietnamese autistic teenager.
+Story arc:
+- Challenge: ${challenge||'(chưa chọn)'}
+- Solution: ${getEn('solution')||'(chưa chọn)'}
+- Result: ${getEn('arcresult')||'(chưa chọn)'}
+${userText?`- Personal voice: "${userText}"`:''}
+Requirements: authentic first-person, empowering, neurodiversity as strength, sensory details, Vietnamese, ends with understanding.`;
+}
+
+function loadG2Preset(i){
+  const p=G2_PRESETS[i];
+  g2Arc={challenge:[...p.c],solution:[...p.s],arcresult:[...p.r]};
+  document.querySelectorAll('.kw-tag').forEach(el=>el.classList.remove('selected'));
+  renderArcZones();updateG2Prompt();showToast('✅ Đã tải bài tập mẫu!');
+}
+
+async function callAI2(mode){
+  const prompt=document.getElementById('g2Prompt').textContent;
+  if(prompt.startsWith('—')){showToast('⚠️ Hãy chọn từ khoá trước!');return;}
+  const sfx={podcast:'\n\nOutput: Kịch bản Podcast 60-90s, giọng tự nhiên, tiếng Việt.',
+    reel:'\n\nOutput: Caption Reel/TikTok với hook 3 giây đầu, tiếng Việt.',
+    sensory:'\n\nOutput: Văn xuôi sáng tạo, góc nhìn người đang trải nghiệm, tiếng Việt.'};
+  const prov={podcast:'claude',reel:'gemini',sensory:'openai'};
+  await runAI('g2Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:900});
+}
+
+// ===== GRADE 3 =====
+function renderStyleGrid(){
+  document.getElementById('styleGrid').innerHTML=STYLES.map(s=>`
+    <div class="style-opt${s.id===g3Style?' selected':''}" onclick="selectStyle('${s.id}')">${s.label}</div>
+  `).join('');
+}
+
+function selectStyle(id){
+  g3Style=id;
+  document.querySelectorAll('.style-opt').forEach((el,i)=>el.classList.toggle('selected',STYLES[i].id===id));
+  buildG3Prompt();
+}
+
+function switchBranch(b){
+  ['A','B','C'].forEach((x,i)=>{
+    document.getElementById('branch'+x).classList.toggle('active',x===b);
+    document.querySelectorAll('.branch-tab')[i].classList.toggle('active',x===b);
+  });
+  buildG3Prompt();
+}
+
+function buildG3Prompt(){
+  const style=STYLES.find(s=>s.id===g3Style)||STYLES[0];
+  const char=document.getElementById('charDesc').value.trim()||'Nhân vật tự kỷ học sinh THPT';
+  let branches='';
+  ['A','B','C'].forEach(b=>{
+    const txt=document.getElementById('branch'+b+'Text').value.trim();
+    if(txt) branches+=`\n--- Branch ${b} ---\n${txt}\n`;
+  });
+  if(!branches){document.getElementById('g3Prompt').textContent='— Điền nội dung branches —';return;}
+  document.getElementById('g3Prompt').textContent=
+`Create a professional video script for an autistic Vietnamese high school student.
+Character: ${char}
+Visual style: ${style.en}
+${branches}
+Requirements: authentic neurodiversity representation, Vietnamese, empowering narrative, professional production notes.`;
+}
+
+function loadG3Preset(i){
+  const p=G3_PRESETS[i];
+  document.getElementById('charDesc').value=p.char;
+  document.getElementById('branchAText').value=p.a;
+  document.getElementById('branchBText').value=p.b;
+  document.getElementById('branchCText').value=p.c;
+  buildG3Prompt();showToast('✅ Đã tải bài tập mẫu!');
+}
+
+async function callAI3(mode){
+  buildG3Prompt();
+  const prompt=document.getElementById('g3Prompt').textContent;
+  if(prompt.startsWith('—')){showToast('⚠️ Hãy điền nội dung branches trước!');return;}
+  const sfx={script:'\n\nOutput: Kịch bản chuyên nghiệp: cảnh quay, lời thoại, hướng dẫn diễn xuất. Tiếng Việt.',
+    storyboard:'\n\nOutput: 6-8 khung hình: góc máy, nhân vật, hành động, cảm xúc. Tiếng Việt.',
+    voiceover:'\n\nOutput: Lời dẫn chuyện tiếng Việt, ấm áp, truyền cảm hứng, tự nhiên.'};
+  const prov={script:'claude',storyboard:'gemini',voiceover:'openai'};
+  await runAI('g3Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:1200});
+}
+
+// ===== SHARED AI RUNNER =====
+async function runAI(resultId, provider, prompt, opts, btnIds=[]){
+  const resultEl=document.getElementById(resultId);
+  resultEl.innerHTML='<span class="spinner"></span> Đang tạo nội dung...';
+  resultEl.className='result-box loading';
+  const btns=btnIds.map(id=>document.getElementById(id)).filter(Boolean);
+  btns.forEach(b=>{if(b)b.disabled=true;});
+  try{
+    const text=await api.call(provider,prompt,opts);
+    resultEl.textContent=text;
+    resultEl.className='result-box';
+    addContrib();
+  }catch(e){
+    resultEl.textContent='❌ Lỗi: '+e.message;
+    resultEl.className='result-box';
+    showToast('❌ '+e.message);
+  }finally{
+    btns.forEach(b=>{if(b)b.disabled=false;});
+  }
+}
+
+// ===== DRAG & DROP =====
+function onDragStart(e,type,id){
+  draggingItem={type,id};
+  e.dataTransfer.effectAllowed='copy';
+  e.currentTarget.classList.add('dragging');
+  setTimeout(()=>e.currentTarget.classList.remove('dragging'),200);
+}
+function onDragOver(e,zone){
+  e.preventDefault();e.dataTransfer.dropEffect='copy';
+  e.currentTarget.classList.add('drag-over');
+}
+function onDragLeave(e){e.currentTarget.classList.remove('drag-over');}
+function onDrop(e,zone){
+  e.preventDefault();e.currentTarget.classList.remove('drag-over');
+  if(!draggingItem) return;
+  if(zone==='board'&&draggingItem.type==='pecs'){
+    const c=PECS.find(x=>x.id===draggingItem.id);
+    if(c){boardCards.push(c);renderBoard();updateG1Prompt();}
+  } else if(['challenge','solution','arcresult'].includes(zone)&&draggingItem.type==='kw'){
+    if(!g2Arc[zone].includes(draggingItem.id)){
+      g2Arc[zone].push(draggingItem.id);renderArcZones();updateG2Prompt();
+    }
+  }
+  draggingItem=null;
+}
+
+// ===== GAMIFICATION =====
+function addContrib(){
+  contributions.push({n:contributions.length+1,date:new Date().toLocaleDateString('vi-VN')});
+  localStorage.setItem('ai4a_contrib',JSON.stringify(contributions));
+  renderAllGrids();
+  showToast('🏆 Story #'+contributions.length+' đã được lưu!');
+}
+
+function renderAllGrids(){
+  const total=contributions.length;
+  document.getElementById('contribCount').textContent=total;
+  ['1','2','3'].forEach(suffix=>{
+    const grid=document.getElementById('contribGrid'+suffix);
+    const count=document.getElementById('totalContrib'+suffix);
+    if(!grid||!count) return;
+    count.textContent=total;
+    let html='';
+    for(let i=0;i<56;i++){
+      const c=contributions[i];
+      html+=c?`<div class="contrib-cell filled" data-tip="Story #${c.n} — ${c.date}"></div>`
+              :`<div class="contrib-cell"></div>`;
+    }
+    grid.innerHTML=html;
+  });
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// ===== LIVE EVENTS =====
+['branchAText','branchBText','branchCText','charDesc'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',buildG3Prompt);
+});
+document.getElementById('userStory')?.addEventListener('input',updateG2Prompt);
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "ai4autism-pecs",
+  "version": "1.0.0",
+  "description": "AI4Autism PECS Therapy Demo",
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "devDependencies": {
+    "vercel": "^39.0.0"
+  }
+}

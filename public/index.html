@@ -199,6 +199,29 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
 }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
+/* IMAGE OUTPUT */
+.img-zone { margin-top: 12px; }
+.img-box {
+  width: 100%; border-radius: 14px; overflow: hidden;
+  border: 2px solid var(--border); background: #f5f5f5;
+  min-height: 60px; display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.img-box img { width: 100%; height: auto; display: block; border-radius: 12px; }
+.img-box .img-placeholder { color: #bbb; font-size: 0.82rem; padding: 20px; text-align: center; }
+.img-box .img-loading { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; color: #888; font-size: 0.82rem; }
+.img-provider { font-size: 0.72rem; color: #888; margin-top: 4px; text-align: right; }
+.img-download { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 8px; padding: 4px 10px; font-size: 0.75rem; cursor: pointer; text-decoration: none; }
+.img-download:hover { background: rgba(0,0,0,0.7); }
+.btn-gen-img {
+  width: 100%; margin-top: 8px; padding: 9px; border: none; border-radius: 10px;
+  font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  background: linear-gradient(135deg, #C084FC, #5BC8F5); color: white;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.btn-gen-img:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-gen-img:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .story-textarea {
   width: 100%; min-height: 70px; border: 2px solid var(--border); border-radius: 10px;
   padding: 9px 12px; font-family: 'Nunito', sans-serif; font-size: 0.84rem; resize: vertical; outline: none;
@@ -264,6 +287,17 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   <div class="panel">
     <div class="panel-title">✨ Kết quả AI</div>
     <div id="g1Result" class="result-box">Gọi AI để xem kết quả tại đây...</div>
+
+    <div class="img-zone">
+      <button class="btn-gen-img" id="btnImg1" onclick="generateImage(1)">
+        🎨 Tạo hình ảnh từ scene này
+      </button>
+      <div class="img-box" id="imgBox1">
+        <div class="img-placeholder">Nhấn nút để tạo ảnh minh hoạ cho scene</div>
+      </div>
+      <div class="img-provider" id="imgProvider1"></div>
+    </div>
+
     <div class="divider"></div>
     <div class="panel-title">📊 Tiến độ học tập</div>
     <div id="contribGrid1" class="contribution-grid"></div>
@@ -331,6 +365,17 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   <div class="panel">
     <div class="panel-title">✨ Kết quả AI</div>
     <div id="g2Result" class="result-box">Gọi AI để xem kết quả tại đây...</div>
+
+    <div class="img-zone">
+      <button class="btn-gen-img" id="btnImg2" onclick="generateImage(2)">
+        🎨 Tạo hình ảnh cảm xúc
+      </button>
+      <div class="img-box" id="imgBox2">
+        <div class="img-placeholder">Hình ảnh minh hoạ trải nghiệm neurodiversity</div>
+      </div>
+      <div class="img-provider" id="imgProvider2"></div>
+    </div>
+
     <div class="divider"></div>
     <div class="panel-title">📊 Tiến độ học tập</div>
     <div id="contribGrid2" class="contribution-grid"></div>
@@ -388,6 +433,17 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   <div class="panel">
     <div class="panel-title">✨ Kết quả AI</div>
     <div id="g3Result" class="result-box">Gọi AI để xem kết quả tại đây...</div>
+
+    <div class="img-zone">
+      <button class="btn-gen-img" id="btnImg3" onclick="generateImage(3)">
+        🎨 Tạo poster / key visual
+      </button>
+      <div class="img-box" id="imgBox3">
+        <div class="img-placeholder">Key visual cho phim / storyboard</div>
+      </div>
+      <div class="img-provider" id="imgProvider3"></div>
+    </div>
+
     <div class="divider"></div>
     <div class="panel-title">📊 Tiến độ học tập</div>
     <div id="contribGrid3" class="contribution-grid"></div>
@@ -751,6 +807,87 @@ async function runAI(resultId, provider, prompt, opts, btnIds=[]){
     showToast('❌ '+e.message);
   }finally{
     btns.forEach(b=>{if(b)b.disabled=false;});
+  }
+}
+
+// ===== IMAGE GENERATION =====
+function buildImagePrompt(grade) {
+  if (grade === 1) {
+    // Ghép từ en descriptions của thẻ đang có trên board
+    if (!boardCards.length) return null;
+    const parts = boardCards.map(c => c.en).filter(Boolean);
+    const style = 'bright 2D illustration, child-friendly, warm colors, no text';
+    return parts.join(', ') + '. ' + style;
+  }
+  if (grade === 2) {
+    // Ghép từ keywords đã chọn
+    const selected = [...document.querySelectorAll('.kw-tag.selected')]
+      .map(el => { const k = KEYWORDS.find(x => 'kw_'+x.id === el.id); return k?.en; })
+      .filter(Boolean);
+    const arcKws = [...g2Arc.challenge, ...g2Arc.solution, ...g2Arc.arcresult]
+      .map(id => { const k = KEYWORDS.find(x => x.id === id); return k?.en; })
+      .filter(Boolean);
+    const all = [...new Set([...arcKws, ...selected])];
+    if (!all.length) return null;
+    return all.join(', ') + '. Digital art, neurodiversity theme, empowering, vibrant colors, no text';
+  }
+  if (grade === 3) {
+    // Lấy prompt_en từ branch đang active
+    const activeBtn = document.querySelector('.branch-tab.active');
+    const b = activeBtn ? activeBtn.textContent.trim().slice(-1) : 'A';
+    const txt = document.getElementById('branch'+b+'Text')?.value.trim();
+    if (!txt) return null;
+    try {
+      const json = JSON.parse(txt);
+      if (json.prompt_en) {
+        const style = STYLES.find(s => s.id === g3Style);
+        return json.prompt_en + (style ? `, ${style.en}` : '') + ', cinematic, no text overlay';
+      }
+    } catch {}
+    return null;
+  }
+  return null;
+}
+
+async function generateImage(grade) {
+  const prompt = buildImagePrompt(grade);
+  if (!prompt) {
+    showToast('⚠️ Hãy thêm thẻ / chọn từ khoá trước!');
+    return;
+  }
+
+  const btn = document.getElementById('btnImg'+grade);
+  const box = document.getElementById('imgBox'+grade);
+  const provEl = document.getElementById('imgProvider'+grade);
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Đang tạo ảnh...';
+  box.innerHTML = '<div class="img-loading"><span class="spinner" style="width:24px;height:24px;border-width:3px"></span><span>Đang render...</span></div>';
+  provEl.textContent = '';
+
+  try {
+    const r = await fetch('/api/image', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || r.statusText);
+
+    const provider = data.usedProvider || 'AI';
+    box.innerHTML = `
+      <img src="${data.url}" alt="AI generated image" loading="lazy">
+      <a class="img-download" href="${data.url}" download="ai4autism-scene.png" target="_blank">⬇ Tải</a>
+    `;
+    provEl.textContent = `Tạo bởi ${provider}`;
+    if (data.revisedPrompt) provEl.title = data.revisedPrompt;
+    showToast('🎨 Ảnh đã tạo xong!');
+  } catch(e) {
+    box.innerHTML = `<div class="img-placeholder">❌ ${e.message}</div>`;
+    showToast('❌ ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🎨 Tạo lại hình ảnh';
   }
 }
 

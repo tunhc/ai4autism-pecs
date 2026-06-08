@@ -1,35 +1,67 @@
 // Vercel Serverless Function — AI4Autism API Proxy
-// Keys read from process.env, never exposed to browser
+// Fallback chain: nếu provider chính fail → thử provider tiếp theo tự động
+
+// Provider tối ưu theo từng tính năng + fallback chain
+const PROVIDER_CHAINS = {
+  // Ngôn ngữ tự nhiên, narrative → Claude mạnh nhất
+  story:      ['claude', 'openai', 'gemini'],
+  podcast:    ['claude', 'openai', 'gemini'],
+  script:     ['claude', 'openai', 'gemini'],
+  // Visual description, creative prompt → Gemini tốt cho multimodal context
+  image:      ['gemini', 'claude', 'openai'],
+  reel:       ['gemini', 'claude', 'openai'],
+  storyboard: ['gemini', 'claude', 'openai'],
+  // Structured output, scenario, technical → OpenAI
+  scenario:   ['openai', 'claude', 'gemini'],
+  sensory:    ['openai', 'claude', 'gemini'],
+  voiceover:  ['openai', 'claude', 'gemini'],
+};
+
+// Nếu client gửi provider cụ thể (không phải mode), build chain từ đó
+const FALLBACK_FROM = {
+  claude: ['claude', 'openai', 'gemini'],
+  gemini: ['gemini', 'claude', 'openai'],
+  openai: ['openai', 'claude', 'gemini'],
+};
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { provider, prompt, maxTokens = 1024, system = '' } = req.body;
+  const { provider, mode, prompt, maxTokens = 1024, system = '' } = req.body;
 
-  if (!provider || !prompt) {
-    return res.status(400).json({ error: 'Missing provider or prompt' });
+  if (!prompt) {
+    return res.status(400).json({ error: 'Missing prompt' });
   }
 
-  try {
-    let text;
-    switch (provider) {
-      case 'claude':
-        text = await callClaude(prompt, maxTokens, system);
-        break;
-      case 'gemini':
-        text = await callGemini(prompt, maxTokens);
-        break;
-      case 'openai':
-        text = await callOpenAI(prompt, maxTokens, system);
-        break;
-      default:
-        return res.status(400).json({ error: 'Unknown provider: ' + provider });
+  // Xác định fallback chain: ưu tiên theo mode, fallback theo provider
+  const chain = PROVIDER_CHAINS[mode] || FALLBACK_FROM[provider] || ['claude', 'openai', 'gemini'];
+
+  const errors = [];
+  for (const p of chain) {
+    try {
+      const text = await callProvider(p, prompt, maxTokens, system);
+      return res.status(200).json({ text, usedProvider: p });
+    } catch (err) {
+      errors.push(`[${p}] ${err.message}`);
+      // Chỉ fallback nếu lỗi là rate limit / server error, không fallback lỗi key missing
+      if (err.message.includes('chưa được cài đặt')) continue;
     }
-    return res.status(200).json({ text });
-  } catch (err) {
-    return res.status(500).json({ error: err.message });
+  }
+
+  return res.status(500).json({
+    error: 'Tất cả providers đều thất bại',
+    details: errors,
+  });
+}
+
+async function callProvider(provider, prompt, maxTokens, system) {
+  switch (provider) {
+    case 'claude':  return callClaude(prompt, maxTokens, system);
+    case 'gemini':  return callGemini(prompt, maxTokens);
+    case 'openai':  return callOpenAI(prompt, maxTokens, system);
+    default: throw new Error('Unknown provider: ' + provider);
   }
 }
 

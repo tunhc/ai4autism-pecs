@@ -477,20 +477,24 @@ let currentGrade=1;
 let draggingItem=null;
 let contributions=JSON.parse(localStorage.getItem('ai4a_contrib')||'[]');
 
-// ===== API — gọi server-side proxy, key nằm trong .env trên Vercel =====
+// ===== API — gọi server-side proxy với fallback tự động =====
 const api = {
+  // mode: tên tính năng ('story','image','podcast'...) để server chọn provider tốt nhất
   async call(provider, prompt, opts={}) {
-    const {maxTokens=1024, system=''} = opts;
+    const {maxTokens=1024, system='', mode=''} = opts;
     const r = await fetch('/api/generate', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({provider, prompt, maxTokens, system}),
+      body: JSON.stringify({provider, mode, prompt, maxTokens, system}),
     });
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || r.statusText);
+    // Thông báo nếu đã fallback sang provider khác
+    if (data.usedProvider && data.usedProvider !== provider) {
+      showToast(`⚡ Fallback sang ${data.usedProvider}`);
+    }
     return data.text;
   },
-  hasAnyKey() { return true; }, // keys ở server, luôn available
 };
 
 // ===== INIT =====
@@ -587,7 +591,7 @@ async function callAI(mode){
     image:'\n\nOutput: Mô tả chi tiết scene để tạo animation (màu sắc, cảm xúc, bố cục) bằng tiếng Việt.',
     scenario:'\n\nOutput: Kịch bản video 15-30s: cảnh mở, hành động chính, kết thúc tích cực. Tiếng Việt.'};
   const prov={story:'claude',image:'gemini',scenario:'openai'};
-  await runAI('g1Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:800},
+  await runAI('g1Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:800, mode},
     ['btnStory','btnImage','btnScenario']);
 }
 
@@ -668,7 +672,7 @@ async function callAI2(mode){
     reel:'\n\nOutput: Caption Reel/TikTok với hook 3 giây đầu, tiếng Việt.',
     sensory:'\n\nOutput: Văn xuôi sáng tạo, góc nhìn người đang trải nghiệm, tiếng Việt.'};
   const prov={podcast:'claude',reel:'gemini',sensory:'openai'};
-  await runAI('g2Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:900});
+  await runAI('g2Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:900, mode});
 }
 
 // ===== GRADE 3 =====
@@ -726,7 +730,7 @@ async function callAI3(mode){
     storyboard:'\n\nOutput: 6-8 khung hình: góc máy, nhân vật, hành động, cảm xúc. Tiếng Việt.',
     voiceover:'\n\nOutput: Lời dẫn chuyện tiếng Việt, ấm áp, truyền cảm hứng, tự nhiên.'};
   const prov={script:'claude',storyboard:'gemini',voiceover:'openai'};
-  await runAI('g3Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:1200});
+  await runAI('g3Result', prov[mode], prompt+(sfx[mode]||''), {maxTokens:1200, mode});
 }
 
 // ===== SHARED AI RUNNER =====

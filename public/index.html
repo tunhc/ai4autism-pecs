@@ -51,6 +51,75 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
 .grade-tab.active.g2 { background: var(--grade2-primary); color: #fff; border-color: var(--grade2-primary); }
 .grade-tab.active.g3 { background: var(--grade3-primary); color: #fff; border-color: var(--grade3-primary); }
 .grade-tab.active.g4 { background: #16a34a; color: #fff; border-color: #16a34a; }
+.grade-tab.active.g5 { background: #e879f9; color: #fff; border-color: #e879f9; }
+
+/* SOCIAL SKILLS */
+.ss-lesson-item { padding: 10px 12px; border-radius: 12px; cursor: pointer; border: 2px solid transparent; background: var(--soft); transition: all 0.15s; display: flex; align-items: center; gap: 8px; }
+.ss-lesson-item:hover { background: #fdf4ff; border-color: #f0abfc; }
+.ss-lesson-item.active { background: #e879f9; color: white; border-color: #e879f9; }
+.ss-lesson-item.done { border-color: #f0abfc; }
+.ss-lesson-item.done::after { content: '⭐'; margin-left: auto; font-size: 14px; }
+.ss-cat-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #c026d3; margin: 10px 0 4px; }
+.ss-search { width: 100%; padding: 7px 10px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.82rem; outline: none; margin-bottom: 10px; }
+.ss-search:focus { border-color: #e879f9; }
+
+/* Social Skills step cards — bigger emoji for kids */
+.ss-step-bank { display: flex; flex-wrap: wrap; gap: 10px; min-height: 60px; padding: 12px; background: #fdf4ff; border-radius: 14px; border: 2px dashed #f0abfc; margin-bottom: 14px; }
+.ss-step-card {
+  background: white; border: 2px solid #f0abfc; border-radius: 14px;
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+  font-size: 0.88rem; font-weight: 700; cursor: grab; user-select: none;
+  transition: all 0.15s; animation: popIn 0.2s ease;
+}
+.ss-step-card .ss-step-emoji { font-size: 28px; line-height: 1; }
+.ss-step-card:hover { background: #fdf4ff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(232,121,249,0.25); }
+.ss-step-card:active { cursor: grabbing; transform: scale(0.96); }
+.ss-step-card.dragging { opacity: 0.3; }
+.ss-step-card.used { opacity: 0.25; pointer-events: none; }
+
+/* Drag hint animated arrow for kids */
+.drag-hint { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #c026d3; background: #fdf4ff; border: 1.5px dashed #f0abfc; border-radius: 10px; padding: 6px 12px; margin-bottom: 10px; animation: hintPulse 2s ease-in-out infinite; }
+@keyframes hintPulse { 0%,100%{opacity:1;transform:translateX(0)} 50%{opacity:0.6;transform:translateX(4px)} }
+.drag-hint-arrow { font-size: 20px; animation: arrowBounce 1s ease-in-out infinite; }
+@keyframes arrowBounce { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
+
+.ss-order-slots { display: flex; flex-direction: column; gap: 10px; }
+.ss-order-slot {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  border: 2.5px dashed #e5e7eb; border-radius: 14px; min-height: 56px;
+  transition: all 0.2s; background: white;
+}
+.ss-order-slot.drag-over { border-color: #e879f9; background: #fdf4ff; }
+.ss-order-slot.filled { border-color: #f0abfc; background: #fdf4ff; border-style: solid; }
+.ss-order-slot.correct { border-color: #e879f9; background: #fae8ff; }
+.ss-order-slot.wrong { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
+.ss-slot-num { width: 30px; height: 30px; border-radius: 50%; background: #f3e8ff; color: #c026d3; font-size: 0.88rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ss-order-slot.filled .ss-slot-num { background: #e879f9; color: white; }
+.ss-order-slot.correct .ss-slot-num { background: #e879f9; color: white; }
+.ss-order-slot.wrong .ss-slot-num { background: #ef4444; color: white; }
+.ss-slot-content { flex: 1; display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 700; }
+.ss-slot-content .ss-step-emoji { font-size: 24px; }
+.ss-slot-empty-hint { color: #ddd; font-size: 0.82rem; }
+
+.btn-check-ss {
+  width: 100%; padding: 13px; border: none; border-radius: 14px; margin-top: 12px;
+  background: linear-gradient(135deg, #e879f9, #c026d3); color: white; font-size: 1rem; font-weight: 800;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
+}
+.btn-check-ss:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(232,121,249,0.4); }
+.btn-check-ss:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.ss-video-box {
+  width: 100%; border-radius: 16px; overflow: hidden; background: #111;
+  aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
+  border: 2px solid #f0abfc;
+}
+.ss-video-box video { width: 100%; height: 100%; object-fit: cover; }
+.ss-video-box .vid-msg { color: #aaa; text-align: center; padding: 20px; font-size: 0.82rem; line-height: 1.7; }
+
+.ss-progress-bar { height: 8px; background: #f3e8ff; border-radius: 20px; margin-top: 8px; overflow: hidden; }
+.ss-progress-fill { height: 100%; background: linear-gradient(90deg,#e879f9,#c026d3); border-radius: 20px; transition: width 0.4s ease; }
+.ss-stars { display: flex; gap: 3px; margin-top: 4px; font-size: 14px; }
 
 /* JOB4AUTISM */
 .lesson-list { display: flex; flex-direction: column; gap: 5px; }
@@ -340,6 +409,7 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   <button class="grade-tab g2" onclick="switchGrade(2)">🌊 THCS (L6–9)</button>
   <button class="grade-tab g3" onclick="switchGrade(3)">🎬 THPT (L10–12)</button>
   <button class="grade-tab g4" onclick="switchGrade(4)">🏭 Job4Autism</button>
+  <button class="grade-tab g5" onclick="switchGrade(5)">🌟 Social Skills</button>
 </div>
 
 <!-- ===== GRADE 1 ===== -->
@@ -608,6 +678,63 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   </div>
 </div>
 
+<!-- ===== GRADE 5: SOCIAL SKILLS ===== -->
+<div id="grade5" class="main" style="display:none">
+  <!-- LEFT: Lesson list -->
+  <div class="panel panel-sticky">
+    <div class="panel-title">🌟 Bài tập kỹ năng xã hội</div>
+    <input class="ss-search" id="ssSearch" placeholder="🔍 Tìm bài học..." oninput="filterSSLessons()">
+    <div id="ssLessonList" class="lesson-list"></div>
+    <div class="divider"></div>
+    <div class="panel-title" style="font-size:0.82rem">⭐ Tiến độ</div>
+    <div class="ss-progress-bar"><div class="ss-progress-fill" id="ssProgressFill" style="width:0%"></div></div>
+    <div class="job-stats" style="justify-content:center;gap:4px">
+      <span id="ssDoneCount">0</span>/<span id="ssTotalCount">50</span> bài ⭐
+    </div>
+    <div id="ssStarRow" class="ss-stars" style="flex-wrap:wrap;justify-content:center;margin-top:8px"></div>
+  </div>
+
+  <!-- MIDDLE: Drag-drop -->
+  <div class="panel">
+    <div id="ssLessonHeader" style="margin-bottom:14px">
+      <div class="panel-title" id="ssLessonTitle" style="font-size:1.1rem">👈 Chọn bài học để bắt đầu</div>
+      <div id="ssLessonDesc" style="font-size:0.82rem;color:#888;margin-bottom:4px"></div>
+    </div>
+
+    <div class="panel-title" style="font-size:0.85rem">🃏 Các bước — nhấn hoặc kéo vào ô bên dưới</div>
+    <div class="drag-hint">
+      <span class="drag-hint-arrow">👆</span>
+      <span>Nhấn vào thẻ để chọn, hoặc <b>kéo</b> thẻ vào ô đánh số</span>
+    </div>
+    <div id="ssStepBank" class="ss-step-bank">
+      <span style="color:#ccc;font-size:0.82rem">Chọn bài học để xem các bước</span>
+    </div>
+
+    <div class="panel-title" style="font-size:0.85rem">📋 Xếp đúng thứ tự (từ bước 1 đến bước cuối)</div>
+    <div id="ssOrderSlots" class="ss-order-slots"></div>
+
+    <button class="btn-check-ss" id="ssBtnCheck" onclick="checkSSOrder()" disabled>✅ Kiểm tra</button>
+    <button style="width:100%;margin-top:8px;padding:10px;border:2px solid #f0abfc;border-radius:12px;background:white;color:#c026d3;font-weight:700;cursor:pointer;font-size:0.88rem" onclick="resetSSLesson()">🔄 Làm lại</button>
+  </div>
+
+  <!-- RIGHT: Feedback + video -->
+  <div class="panel">
+    <div class="panel-title">🎬 Video hướng dẫn</div>
+    <div id="ssFeedback" class="result-feedback"></div>
+    <div class="ss-video-box" id="ssVideoBox">
+      <div class="vid-msg">
+        🌟 Sắp xếp đúng thứ tự<br>để xem video hướng dẫn
+      </div>
+    </div>
+    <div id="ssVideoInfo" style="font-size:0.75rem;color:#888;margin-top:6px;text-align:center"></div>
+    <div style="margin-top:14px;padding:12px;background:#fdf4ff;border-radius:10px;font-size:0.78rem;color:#c026d3;line-height:1.7">
+      <b>📁 Upload video:</b><br>
+      Đặt file vào <code>public/videos/social/{id}.mp4</code><br>
+      Push lên GitHub → Vercel tự serve
+    </div>
+  </div>
+</div>
+
 <!-- Modal đã bỏ — API keys quản lý qua .env trên server -->
 
 <div id="toast" class="toast"></div>
@@ -717,16 +844,17 @@ function init(){
   renderStyleGrid();
   renderAllGrids();
   initJob4Autism();
+  initSocialSkills();
 }
 
 // ===== GRADE SWITCH =====
 function switchGrade(g){
   currentGrade=g;
-  [1,2,3,4].forEach(n=>{
+  [1,2,3,4,5].forEach(n=>{
     document.getElementById('grade'+n).style.display=n===g?'grid':'none';
     document.querySelectorAll('.grade-tab')[n-1].classList.toggle('active',n===g);
   });
-  const p={1:'#FF6B6B',2:'#6C63FF',3:'#1A1A2E',4:'#16a34a'};
+  const p={1:'#FF6B6B',2:'#6C63FF',3:'#1A1A2E',4:'#16a34a',5:'#e879f9'};
   document.documentElement.style.setProperty('--current-primary',p[g]);
 }
 
@@ -1687,7 +1815,7 @@ function checkOrder() {
 function playLessonVideo() {
   const videoEl = document.getElementById('jobVideoBox');
   const infoEl = document.getElementById('jobVideoInfo');
-  const src = `/videos/${currentLesson.id}.mp4`;
+  const src = `/videos/job4autism/${currentLesson.id}.mp4`;
   videoEl.innerHTML = `<video controls autoplay style="width:100%;height:100%;object-fit:cover">
     <source src="${src}" type="video/mp4">
   </video>`;
@@ -1696,7 +1824,7 @@ function playLessonVideo() {
     videoEl.innerHTML = `<div class="vid-msg">
       📁 Chưa có video cho bài này<br>
       <code style="font-size:0.75rem;background:#333;padding:2px 6px;border-radius:4px">${src}</code><br><br>
-      Upload file video vào thư mục <b>public/videos/</b>
+      Upload file video vào thư mục <b>public/videos/job4autism/</b>
     </div>`;
     infoEl.textContent = '';
   });
@@ -1719,6 +1847,565 @@ function updateJobProgress() {
   document.getElementById('jobDoneCount').textContent = done;
   document.getElementById('jobTotalCount').textContent = total;
   document.getElementById('jobProgressFill').style.width = (done/total*100)+'%';
+}
+
+// ===== SOCIAL SKILLS DATA (50 bài — dành cho bé dưới 10 tuổi) =====
+const SS_LESSONS = [
+  // ── Ở Nhà (20 bài) ──
+  {id:'ruatay',cat:'home',cat_label:'🏠 Ở Nhà',title:'Rửa tay sạch sẽ',icon:'🤲',steps:[
+    {id:'rt1',emoji:'🚿',label:'Mở vòi nước'},
+    {id:'rt2',emoji:'💧',label:'Làm ướt hai bàn tay'},
+    {id:'rt3',emoji:'🧴',label:'Lấy xà phòng xoa đều'},
+    {id:'rt4',emoji:'🙌',label:'Chà tay 20 giây'},
+    {id:'rt5',emoji:'💦',label:'Xả sạch và lau khô'},
+  ]},
+  {id:'danh-rang-sang',cat:'home',cat_label:'🏠 Ở Nhà',title:'Đánh răng buổi sáng',icon:'🪥',steps:[
+    {id:'dr1',emoji:'🪥',label:'Lấy bàn chải và kem đánh răng'},
+    {id:'dr2',emoji:'💧',label:'Làm ướt bàn chải'},
+    {id:'dr3',emoji:'🦷',label:'Chải răng vòng tròn 2 phút'},
+    {id:'dr4',emoji:'🚰',label:'Súc miệng sạch'},
+    {id:'dr5',emoji:'✅',label:'Cất bàn chải về chỗ'},
+  ]},
+  {id:'mac-quan-ao',cat:'home',cat_label:'🏠 Ở Nhà',title:'Mặc quần áo đi học',icon:'👕',steps:[
+    {id:'qa1',emoji:'☀️',label:'Thức dậy đúng giờ'},
+    {id:'qa2',emoji:'🛁',label:'Rửa mặt sạch sẽ'},
+    {id:'qa3',emoji:'👕',label:'Mặc áo vào'},
+    {id:'qa4',emoji:'👖',label:'Mặc quần vào'},
+    {id:'qa5',emoji:'👟',label:'Đi giày và buộc dây'},
+  ]},
+  {id:'an-sang',cat:'home',cat_label:'🏠 Ở Nhà',title:'Ăn sáng gọn gàng',icon:'🍳',steps:[
+    {id:'as1',emoji:'🪑',label:'Ngồi đúng chỗ ở bàn ăn'},
+    {id:'as2',emoji:'🍳',label:'Chờ người lớn dọn cơm'},
+    {id:'as3',emoji:'🙏',label:'Nói "Con ăn cơm ạ"'},
+    {id:'as4',emoji:'🥢',label:'Ăn chậm không làm rơi'},
+    {id:'as5',emoji:'🧹',label:'Cất bát và lau miệng sau ăn'},
+  ]},
+  {id:'gap-chan',cat:'home',cat_label:'🏠 Ở Nhà',title:'Gấp chăn buổi sáng',icon:'🛏️',steps:[
+    {id:'gc1',emoji:'🌅',label:'Thức dậy ra khỏi giường'},
+    {id:'gc2',emoji:'🛏️',label:'Kéo chăn ra phẳng'},
+    {id:'gc3',emoji:'📐',label:'Gấp chăn đôi một lần'},
+    {id:'gc4',emoji:'📐',label:'Gấp đôi lần nữa'},
+    {id:'gc5',emoji:'✅',label:'Đặt gọn gàng trên giường'},
+  ]},
+  {id:'don-do-choi',cat:'home',cat_label:'🏠 Ở Nhà',title:'Dọn đồ chơi sau khi chơi',icon:'🧸',steps:[
+    {id:'dd1',emoji:'⏰',label:'Nghe tiếng hiệu dừng chơi'},
+    {id:'dd2',emoji:'📦',label:'Lấy hộp/túi đựng đồ chơi'},
+    {id:'dd3',emoji:'🧸',label:'Nhặt từng món đồ chơi'},
+    {id:'dd4',emoji:'📥',label:'Xếp vào hộp gọn gàng'},
+    {id:'dd5',emoji:'😊',label:'Nói "Con dọn xong rồi ạ"'},
+  ]},
+  {id:'danh-rang-toi',cat:'home',cat_label:'🏠 Ở Nhà',title:'Đánh răng buổi tối',icon:'🌙',steps:[
+    {id:'drt1',emoji:'🌙',label:'Trước khi đi ngủ'},
+    {id:'drt2',emoji:'🪥',label:'Lấy bàn chải, thoa kem'},
+    {id:'drt3',emoji:'🦷',label:'Chải đủ 3 mặt răng'},
+    {id:'drt4',emoji:'🚰',label:'Súc miệng'},
+    {id:'drt5',emoji:'🛏️',label:'Đi vào giường ngủ'},
+  ]},
+  {id:'ruatay-truoc-an',cat:'home',cat_label:'🏠 Ở Nhà',title:'Rửa tay trước khi ăn',icon:'🧼',steps:[
+    {id:'rta1',emoji:'🍽️',label:'Chuẩn bị đến bàn ăn'},
+    {id:'rta2',emoji:'🚿',label:'Đi ra vòi nước trước'},
+    {id:'rta3',emoji:'🧼',label:'Rửa tay xà phòng'},
+    {id:'rta4',emoji:'🏃',label:'Lau khô tay'},
+    {id:'rta5',emoji:'🪑',label:'Vào bàn ngồi ăn'},
+  ]},
+  {id:'cat-cap',cat:'home',cat_label:'🏠 Ở Nhà',title:'Cất cặp sách sau khi về',icon:'🎒',steps:[
+    {id:'cc1',emoji:'🏃',label:'Về nhà và thay dép'},
+    {id:'cc2',emoji:'🤲',label:'Chào ba mẹ'},
+    {id:'cc3',emoji:'🎒',label:'Để cặp đúng góc học tập'},
+    {id:'cc4',emoji:'👕',label:'Thay quần áo ở nhà'},
+    {id:'cc5',emoji:'🧼',label:'Rửa tay sạch sẽ'},
+  ]},
+  {id:'uong-thuoc',cat:'home',cat_label:'🏠 Ở Nhà',title:'Uống thuốc khi bị ốm',icon:'💊',steps:[
+    {id:'ut1',emoji:'🤧',label:'Báo với ba mẹ khi không khoẻ'},
+    {id:'ut2',emoji:'💊',label:'Nhận thuốc từ người lớn'},
+    {id:'ut3',emoji:'💧',label:'Lấy ly nước'},
+    {id:'ut4',emoji:'💊',label:'Uống thuốc đúng liều'},
+    {id:'ut5',emoji:'😊',label:'Nói "Con uống xong rồi ạ"'},
+  ]},
+  {id:'lau-mieng',cat:'home',cat_label:'🏠 Ở Nhà',title:'Lau miệng sau khi ăn',icon:'🧻',steps:[
+    {id:'lm1',emoji:'🥢',label:'Ăn xong đặt đũa/muỗng xuống'},
+    {id:'lm2',emoji:'🧻',label:'Lấy khăn giấy hoặc khăn ướt'},
+    {id:'lm3',emoji:'👄',label:'Lau miệng nhẹ nhàng'},
+    {id:'lm4',emoji:'🗑️',label:'Bỏ khăn giấy vào thùng'},
+    {id:'lm5',emoji:'😊',label:'Nói cảm ơn sau bữa ăn'},
+  ]},
+  {id:'bo-rac',cat:'home',cat_label:'🏠 Ở Nhà',title:'Bỏ rác đúng chỗ',icon:'🗑️',steps:[
+    {id:'br1',emoji:'🍬',label:'Ăn kẹo/bánh xong'},
+    {id:'br2',emoji:'👀',label:'Nhìn tìm thùng rác gần nhất'},
+    {id:'br3',emoji:'🚶',label:'Đi đến thùng rác'},
+    {id:'br4',emoji:'🗑️',label:'Bỏ rác vào thùng'},
+    {id:'br5',emoji:'😊',label:'Rửa tay nếu cần'},
+  ]},
+  {id:'ngu-dung-gio',cat:'home',cat_label:'🏠 Ở Nhà',title:'Đi ngủ đúng giờ',icon:'😴',steps:[
+    {id:'ng1',emoji:'📱',label:'Tắt tivi / điện thoại'},
+    {id:'ng2',emoji:'🦷',label:'Đánh răng và rửa mặt'},
+    {id:'ng3',emoji:'🛏️',label:'Vào giường nằm'},
+    {id:'ng4',emoji:'🌙',label:'Tắt đèn'},
+    {id:'ng5',emoji:'😴',label:'Nhắm mắt và thở đều'},
+  ]},
+  {id:'xin-phep-di-choi',cat:'home',cat_label:'🏠 Ở Nhà',title:'Xin phép trước khi ra ngoài',icon:'🚪',steps:[
+    {id:'xp1',emoji:'🏃',label:'Muốn ra ngoài chơi'},
+    {id:'xp2',emoji:'👨‍👩‍👧',label:'Tìm ba mẹ'},
+    {id:'xp3',emoji:'🗣️',label:'Nói "Con xin phép ra ngoài"'},
+    {id:'xp4',emoji:'✅',label:'Chờ ba mẹ đồng ý'},
+    {id:'xp5',emoji:'👋',label:'Nói "Con đi nhé ạ"'},
+  ]},
+  {id:'rua-chen',cat:'home',cat_label:'🏠 Ở Nhà',title:'Bê bát đĩa ra bồn rửa',icon:'🍽️',steps:[
+    {id:'rc1',emoji:'✅',label:'Ăn xong đặt đũa/muỗng vào bát'},
+    {id:'rc2',emoji:'🤲',label:'Cẩn thận bưng bát hai tay'},
+    {id:'rc3',emoji:'🚿',label:'Đem ra bồn rửa chén'},
+    {id:'rc4',emoji:'📥',label:'Đặt nhẹ nhàng không làm vỡ'},
+    {id:'rc5',emoji:'😊',label:'Nói "Con cất bát rồi ạ"'},
+  ]},
+  {id:'chao-khi-ve',cat:'home',cat_label:'🏠 Ở Nhà',title:'Chào khi về nhà',icon:'🏠',steps:[
+    {id:'cv1',emoji:'🚪',label:'Bước vào cửa nhà'},
+    {id:'cv2',emoji:'👋',label:'Nói to "Con về rồi ạ!"'},
+    {id:'cv3',emoji:'👟',label:'Cởi giày để đúng chỗ'},
+    {id:'cv4',emoji:'😊',label:'Chào từng người trong nhà'},
+    {id:'cv5',emoji:'🎒',label:'Để cặp vào góc học tập'},
+  ]},
+  {id:'xin-phep-xem-tv',cat:'home',cat_label:'🏠 Ở Nhà',title:'Xin phép xem TV / điện thoại',icon:'📺',steps:[
+    {id:'xt1',emoji:'📺',label:'Muốn xem TV'},
+    {id:'xt2',emoji:'👨‍👩‍👧',label:'Hỏi ba mẹ trước'},
+    {id:'xt3',emoji:'🗣️',label:'Nói "Con xin xem một chút được không ạ?"'},
+    {id:'xt4',emoji:'⏰',label:'Hỏi được xem bao lâu'},
+    {id:'xt5',emoji:'🔌',label:'Tắt đúng giờ đã hẹn'},
+  ]},
+  {id:'tu-chuan-bi-ca-nhan',cat:'home',cat_label:'🏠 Ở Nhà',title:'Tự chuẩn bị đồ cá nhân',icon:'🎒',steps:[
+    {id:'tc1',emoji:'📋',label:'Xem thời khoá biểu ngày mai'},
+    {id:'tc2',emoji:'📚',label:'Lấy sách vở đúng môn'},
+    {id:'tc3',emoji:'🖊️',label:'Kiểm tra bút, thước, tẩy'},
+    {id:'tc4',emoji:'🎒',label:'Xếp vào cặp gọn gàng'},
+    {id:'tc5',emoji:'✅',label:'Để cặp ở góc cố định'},
+  ]},
+  {id:'lau-ban',cat:'home',cat_label:'🏠 Ở Nhà',title:'Lau bàn học sau khi học',icon:'🧽',steps:[
+    {id:'lb1',emoji:'📚',label:'Học xong cất sách vở vào cặp'},
+    {id:'lb2',emoji:'🧽',label:'Lấy khăn ướt'},
+    {id:'lb3',emoji:'🔄',label:'Lau bàn theo vòng tròn'},
+    {id:'lb4',emoji:'💨',label:'Lau khô lại bằng khăn khô'},
+    {id:'lb5',emoji:'✅',label:'Treo khăn lại chỗ cũ'},
+  ]},
+  {id:'cam-on-ba-me',cat:'home',cat_label:'🏠 Ở Nhà',title:'Nói cảm ơn ba mẹ',icon:'❤️',steps:[
+    {id:'cb1',emoji:'🍳',label:'Ba mẹ nấu cơm / làm việc cho bé'},
+    {id:'cb2',emoji:'👀',label:'Nhìn vào mắt ba mẹ'},
+    {id:'cb3',emoji:'😊',label:'Mỉm cười'},
+    {id:'cb4',emoji:'🗣️',label:'Nói "Con cảm ơn ba/mẹ ạ"'},
+    {id:'cb5',emoji:'🤗',label:'Ôm ba mẹ nếu muốn'},
+  ]},
+  // ── Ở Trường (15 bài) ──
+  {id:'chao-thay-co',cat:'school',cat_label:'🏫 Ở Trường',title:'Chào thầy cô khi vào lớp',icon:'👩‍🏫',steps:[
+    {id:'ct1',emoji:'🚪',label:'Bước vào cửa lớp'},
+    {id:'ct2',emoji:'👀',label:'Nhìn thầy/cô giáo'},
+    {id:'ct3',emoji:'😊',label:'Mỉm cười'},
+    {id:'ct4',emoji:'🗣️',label:'Nói "Em chào thầy/cô ạ"'},
+    {id:'ct5',emoji:'🪑',label:'Đi vào ngồi đúng chỗ'},
+  ]},
+  {id:'xep-hang-vao-lop',cat:'school',cat_label:'🏫 Ở Trường',title:'Xếp hàng vào lớp',icon:'👣',steps:[
+    {id:'xl1',emoji:'🔔',label:'Nghe tiếng chuông vào lớp'},
+    {id:'xl2',emoji:'👣',label:'Đi đến hàng của mình'},
+    {id:'xl3',emoji:'🧍',label:'Đứng thẳng, không chen'},
+    {id:'xl4',emoji:'🤫',label:'Giữ im lặng khi xếp hàng'},
+    {id:'xl5',emoji:'🚶',label:'Đi theo thứ tự vào lớp'},
+  ]},
+  {id:'giơ-tay',cat:'school',cat_label:'🏫 Ở Trường',title:'Giơ tay khi muốn phát biểu',icon:'🙋',steps:[
+    {id:'gt1',emoji:'🤔',label:'Biết câu trả lời / muốn hỏi'},
+    {id:'gt2',emoji:'🙋',label:'Giơ tay lên cao'},
+    {id:'gt3',emoji:'🤫',label:'Chờ thầy/cô gọi tên'},
+    {id:'gt4',emoji:'🗣️',label:'Đứng lên nói rõ ràng'},
+    {id:'gt5',emoji:'🪑',label:'Ngồi xuống sau khi nói xong'},
+  ]},
+  {id:'xin-phep-ve-sinh',cat:'school',cat_label:'🏫 Ở Trường',title:'Xin phép đi vệ sinh',icon:'🚽',steps:[
+    {id:'xpvs1',emoji:'🙋',label:'Giơ tay xin phép'},
+    {id:'xpvs2',emoji:'🗣️',label:'Nói "Em xin phép đi vệ sinh ạ"'},
+    {id:'xpvs3',emoji:'✅',label:'Chờ thầy/cô đồng ý'},
+    {id:'xpvs4',emoji:'🚽',label:'Đi và về nhanh'},
+    {id:'xpvs5',emoji:'🪑',label:'Về chỗ ngồi yên lặng'},
+  ]},
+  {id:'chia-se-do-dung',cat:'school',cat_label:'🏫 Ở Trường',title:'Chia sẻ đồ dùng với bạn',icon:'✏️',steps:[
+    {id:'cs1',emoji:'👀',label:'Bạn thiếu đồ dùng'},
+    {id:'cs2',emoji:'😊',label:'Mỉm cười với bạn'},
+    {id:'cs3',emoji:'🗣️',label:'Nói "Mình cho bạn mượn nhé"'},
+    {id:'cs4',emoji:'🤝',label:'Đưa đồ dùng cho bạn'},
+    {id:'cs5',emoji:'😊',label:'Nhận lại khi bạn trả'},
+  ]},
+  {id:'choi-cung-ban',cat:'school',cat_label:'🏫 Ở Trường',title:'Chơi cùng bạn giờ ra chơi',icon:'🏃',steps:[
+    {id:'ccb1',emoji:'😊',label:'Đến gần nhóm bạn'},
+    {id:'ccb2',emoji:'🗣️',label:'Nói "Mình có thể chơi cùng không?"'},
+    {id:'ccb3',emoji:'✅',label:'Chờ bạn đồng ý'},
+    {id:'ccb4',emoji:'🤝',label:'Chơi theo luật của trò chơi'},
+    {id:'ccb5',emoji:'😊',label:'Cảm ơn bạn sau khi chơi'},
+  ]},
+  {id:'xin-loi-ban',cat:'school',cat_label:'🏫 Ở Trường',title:'Xin lỗi khi lỡ va vào bạn',icon:'🙏',steps:[
+    {id:'xl1b',emoji:'😮',label:'Lỡ chạm/va vào bạn'},
+    {id:'xl2b',emoji:'🛑',label:'Dừng lại ngay'},
+    {id:'xl3b',emoji:'👀',label:'Nhìn vào mắt bạn'},
+    {id:'xl4b',emoji:'🗣️',label:'Nói "Tớ xin lỗi bạn nhé"'},
+    {id:'xl5b',emoji:'😊',label:'Hỏi bạn có bị đau không'},
+  ]},
+  {id:'cat-sach-vo',cat:'school',cat_label:'🏫 Ở Trường',title:'Cất sách vở vào cặp',icon:'📚',steps:[
+    {id:'csv1',emoji:'🔔',label:'Hết giờ học'},
+    {id:'csv2',emoji:'📚',label:'Xếp sách vở gọn lên bàn'},
+    {id:'csv3',emoji:'🎒',label:'Mở cặp ra'},
+    {id:'csv4',emoji:'📥',label:'Cẩn thận đặt sách vào cặp'},
+    {id:'csv5',emoji:'🔒',label:'Kéo khoá cặp lại'},
+  ]},
+  {id:'an-trua-truong',cat:'school',cat_label:'🏫 Ở Trường',title:'Ăn trưa tại trường',icon:'🍱',steps:[
+    {id:'at1',emoji:'🧼',label:'Rửa tay trước khi ăn'},
+    {id:'at2',emoji:'🪑',label:'Ngồi đúng chỗ'},
+    {id:'at3',emoji:'🍱',label:'Lấy khay thức ăn'},
+    {id:'at4',emoji:'🥢',label:'Ăn không làm ồn'},
+    {id:'at5',emoji:'🗑️',label:'Trả khay và dọn chỗ'},
+  ]},
+  {id:'giup-ban',cat:'school',cat_label:'🏫 Ở Trường',title:'Giúp bạn nhặt đồ bị rơi',icon:'🫶',steps:[
+    {id:'gb1',emoji:'📚',label:'Thấy đồ của bạn bị rơi'},
+    {id:'gb2',emoji:'🚶',label:'Đến gần bạn'},
+    {id:'gb3',emoji:'🤲',label:'Nhặt đồ lên'},
+    {id:'gb4',emoji:'🤝',label:'Đưa lại cho bạn'},
+    {id:'gb5',emoji:'😊',label:'Mỉm cười với bạn'},
+  ]},
+  {id:'giu-im-lang',cat:'school',cat_label:'🏫 Ở Trường',title:'Giữ im lặng trong lớp',icon:'🤫',steps:[
+    {id:'gil1',emoji:'🎒',label:'Đến lớp ngồi xuống chỗ'},
+    {id:'gil2',emoji:'📚',label:'Lấy sách vở ra'},
+    {id:'gil3',emoji:'🤫',label:'Không nói chuyện riêng'},
+    {id:'gil4',emoji:'👀',label:'Nhìn lên bảng'},
+    {id:'gil5',emoji:'👂',label:'Lắng nghe thầy/cô giảng'},
+  ]},
+  {id:'xep-hang-ra-ve',cat:'school',cat_label:'🏫 Ở Trường',title:'Xếp hàng ra về',icon:'🏠',steps:[
+    {id:'xhrv1',emoji:'🔔',label:'Nghe tiếng chuông tan học'},
+    {id:'xhrv2',emoji:'🎒',label:'Cất đồ vào cặp'},
+    {id:'xhrv3',emoji:'👣',label:'Đứng vào hàng của lớp'},
+    {id:'xhrv4',emoji:'👩‍🏫',label:'Chờ thầy/cô cho về'},
+    {id:'xhrv5',emoji:'👋',label:'Chào thầy/cô trước khi ra'},
+  ]},
+  {id:'lau-bang',cat:'school',cat_label:'🏫 Ở Trường',title:'Lau bảng giúp thầy cô',icon:'🧽',steps:[
+    {id:'lb1s',emoji:'✅',label:'Thầy/cô nhờ lau bảng'},
+    {id:'lb2s',emoji:'😊',label:'Nói "Dạ để em ạ"'},
+    {id:'lb3s',emoji:'🧽',label:'Lấy cục tẩy bảng'},
+    {id:'lb4s',emoji:'🔄',label:'Lau bảng theo chiều ngang'},
+    {id:'lb5s',emoji:'🙏',label:'Để tẩy về chỗ cũ'},
+  ]},
+  {id:'khong-chen-hang',cat:'school',cat_label:'🏫 Ở Trường',title:'Không chen hàng khi xếp hàng',icon:'🚫',steps:[
+    {id:'kcnh1',emoji:'👣',label:'Thấy có hàng chờ'},
+    {id:'kcnh2',emoji:'🧍',label:'Đứng vào cuối hàng'},
+    {id:'kcnh3',emoji:'⏳',label:'Chờ đến lượt mình'},
+    {id:'kcnh4',emoji:'🚫',label:'Không chen vào giữa'},
+    {id:'kcnh5',emoji:'😊',label:'Vui vẻ chờ đợi'},
+  ]},
+  {id:'bao-cao-thay-co',cat:'school',cat_label:'🏫 Ở Trường',title:'Báo cáo thầy/cô khi gặp vấn đề',icon:'🗣️',steps:[
+    {id:'bctc1',emoji:'😟',label:'Gặp điều không ổn'},
+    {id:'bctc2',emoji:'🙋',label:'Giơ tay hoặc đến gặp thầy/cô'},
+    {id:'bctc3',emoji:'👀',label:'Nhìn thầy/cô'},
+    {id:'bctc4',emoji:'🗣️',label:'Nói rõ điều đã xảy ra'},
+    {id:'bctc5',emoji:'✅',label:'Lắng nghe thầy/cô hướng dẫn'},
+  ]},
+  // ── Nơi Công Cộng (15 bài) ──
+  {id:'xep-hang-cho',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Xếp hàng chờ đến lượt',icon:'⏳',steps:[
+    {id:'xhc1',emoji:'👀',label:'Thấy có hàng chờ'},
+    {id:'xhc2',emoji:'🧍',label:'Đứng vào cuối hàng'},
+    {id:'xhc3',emoji:'⏳',label:'Đứng yên chờ đợi'},
+    {id:'xhc4',emoji:'🚶',label:'Tiến lên khi đến lượt'},
+    {id:'xhc5',emoji:'😊',label:'Nói cảm ơn khi được phục vụ'},
+  ]},
+  {id:'cam-on',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Nói lời cảm ơn',icon:'🙏',steps:[
+    {id:'co1',emoji:'🎁',label:'Ai đó giúp bé / cho bé gì đó'},
+    {id:'co2',emoji:'👀',label:'Nhìn vào mắt người đó'},
+    {id:'co3',emoji:'😊',label:'Mỉm cười'},
+    {id:'co4',emoji:'🗣️',label:'Nói "Cảm ơn ạ"'},
+    {id:'co5',emoji:'🙇',label:'Cúi đầu nhẹ hoặc gật đầu'},
+  ]},
+  {id:'xin-loi',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Nói xin lỗi khi làm phiền',icon:'🙇',steps:[
+    {id:'xl1p',emoji:'😮',label:'Vô ý làm phiền ai đó'},
+    {id:'xl2p',emoji:'🛑',label:'Dừng lại'},
+    {id:'xl3p',emoji:'👀',label:'Nhìn người đó'},
+    {id:'xl4p',emoji:'🗣️',label:'Nói "Xin lỗi ạ"'},
+    {id:'xl5p',emoji:'😊',label:'Bước đi tiếp'},
+  ]},
+  {id:'giu-yenl ang',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Giữ yên lặng nơi công cộng',icon:'🤫',steps:[
+    {id:'gyl1',emoji:'🏥',label:'Vào nơi cần giữ yên lặng'},
+    {id:'gyl2',emoji:'🤫',label:'Nhớ không được la hét'},
+    {id:'gyl3',emoji:'🗣️',label:'Nói nhỏ khi cần'},
+    {id:'gyl4',emoji:'📱',label:'Tắt âm điện thoại / máy tính bảng'},
+    {id:'gyl5',emoji:'😊',label:'Đi nhẹ nhàng'},
+  ]},
+  {id:'qua-duong',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Qua đường an toàn',icon:'🚦',steps:[
+    {id:'qd1',emoji:'🛑',label:'Dừng lại ở mép vỉa hè'},
+    {id:'qd2',emoji:'👈',label:'Nhìn sang TRÁI'},
+    {id:'qd3',emoji:'👉',label:'Nhìn sang PHẢI'},
+    {id:'qd4',emoji:'👈',label:'Nhìn lại TRÁI lần nữa'},
+    {id:'qd5',emoji:'🚶',label:'Đi nhanh qua khi an toàn'},
+  ]},
+  {id:'khong-chay-sieu-thi',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Không chạy trong siêu thị',icon:'🛒',steps:[
+    {id:'kcst1',emoji:'🛒',label:'Vào siêu thị cùng ba mẹ'},
+    {id:'kcst2',emoji:'🤝',label:'Nắm tay ba mẹ'},
+    {id:'kcst3',emoji:'🚶',label:'Đi chậm theo ba mẹ'},
+    {id:'kcst4',emoji:'🚫',label:'Không chạy hay la hét'},
+    {id:'kcst5',emoji:'😊',label:'Giúp ba mẹ lấy đồ'},
+  ]},
+  {id:'tra-loi-nguoi-lon',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Trả lời khi người lớn hỏi',icon:'💬',steps:[
+    {id:'trnl1',emoji:'🗣️',label:'Người lớn hỏi bé điều gì'},
+    {id:'trnl2',emoji:'👀',label:'Nhìn vào người đó'},
+    {id:'trnl3',emoji:'🤔',label:'Nghĩ về câu trả lời'},
+    {id:'trnl4',emoji:'😊',label:'Trả lời rõ ràng bằng lời'},
+    {id:'trnl5',emoji:'🙇',label:'Kết thúc bằng "ạ"'},
+  ]},
+  {id:'khong-xa-rac',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Không xả rác ra đường',icon:'🌿',steps:[
+    {id:'kxr1',emoji:'🍭',label:'Ăn kẹo / uống nước xong'},
+    {id:'kxr2',emoji:'🚫',label:'Không vứt rác xuống đất'},
+    {id:'kxr3',emoji:'👁️',label:'Tìm thùng rác gần nhất'},
+    {id:'kxr4',emoji:'🚶',label:'Đi đến thùng rác'},
+    {id:'kxr5',emoji:'🗑️',label:'Bỏ rác vào thùng'},
+  ]},
+  {id:'ngoi-yen-xe-bus',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Ngồi yên trên xe buýt',icon:'🚌',steps:[
+    {id:'nyxb1',emoji:'🚌',label:'Lên xe buýt'},
+    {id:'nyxb2',emoji:'🪑',label:'Tìm ghế ngồi'},
+    {id:'nyxb3',emoji:'🪑',label:'Ngồi xuống và thắt dây'},
+    {id:'nyxb4',emoji:'🤫',label:'Không la hét / chạy nhảy'},
+    {id:'nyxb5',emoji:'🚌',label:'Xuống đúng trạm'},
+  ]},
+  {id:'xin-giup-do-lac',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Xin giúp đỡ khi bị lạc',icon:'🆘',steps:[
+    {id:'xgdl1',emoji:'😟',label:'Không thấy ba mẹ'},
+    {id:'xgdl2',emoji:'🛑',label:'Đứng yên không chạy lung tung'},
+    {id:'xgdl3',emoji:'👮',label:'Tìm người có thể tin tưởng (bảo vệ, nhân viên)'},
+    {id:'xgdl4',emoji:'🗣️',label:'Nói "Cháu bị lạc, nhờ cô/chú giúp"'},
+    {id:'xgdl5',emoji:'📞',label:'Đọc số điện thoại ba/mẹ'},
+  ]},
+  {id:'cam-on-nhan-qua',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Nhận quà và nói cảm ơn',icon:'🎁',steps:[
+    {id:'cnq1',emoji:'🎁',label:'Ai đó tặng quà cho bé'},
+    {id:'cnq2',emoji:'🤲',label:'Đưa hai tay đón nhận'},
+    {id:'cnq3',emoji:'👀',label:'Nhìn vào người tặng'},
+    {id:'cnq4',emoji:'😊',label:'Nói "Con cảm ơn ạ"'},
+    {id:'cnq5',emoji:'🙇',label:'Cúi đầu chào'},
+  ]},
+  {id:'khong-chi-tay',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Không chỉ tay vào người khác',icon:'🚫',steps:[
+    {id:'kct1',emoji:'👀',label:'Muốn hỏi về người / vật gì đó'},
+    {id:'kct2',emoji:'🚫',label:'Không chỉ thẳng tay vào người'},
+    {id:'kct3',emoji:'🗣️',label:'Nói thay vì chỉ tay'},
+    {id:'kct4',emoji:'🤫',label:'Hỏi nhỏ với ba mẹ nếu tò mò'},
+    {id:'kct5',emoji:'😊',label:'Nhìn đi chỗ khác nếu không liên quan'},
+  ]},
+  {id:'giu-sach-noi-cong-cong',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Giữ sạch nơi công cộng',icon:'🌿',steps:[
+    {id:'gsncc1',emoji:'🌿',label:'Đến công viên / sân chơi'},
+    {id:'gsncc2',emoji:'🚫',label:'Không hái cây bẻ cành'},
+    {id:'gsncc3',emoji:'🗑️',label:'Bỏ rác đúng thùng'},
+    {id:'gsncc4',emoji:'🚿',label:'Dùng vòi nước nhẹ nhàng'},
+    {id:'gsncc5',emoji:'😊',label:'Để nơi đó đẹp cho mọi người'},
+  ]},
+  {id:'nhường-chỗ',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Nhường chỗ cho người cần',icon:'🧓',steps:[
+    {id:'nc1',emoji:'🚌',label:'Ngồi trên xe buýt / nơi đông'},
+    {id:'nc2',emoji:'👀',label:'Thấy người già / phụ nữ / trẻ em'},
+    {id:'nc3',emoji:'🧍',label:'Đứng dậy khỏi chỗ'},
+    {id:'nc4',emoji:'🗣️',label:'Nói "Mời ông/bà ngồi ạ"'},
+    {id:'nc5',emoji:'😊',label:'Đứng giữ thăng bằng'},
+  ]},
+  {id:'chao-nguoi-lon',cat:'public',cat_label:'🌍 Nơi Công Cộng',title:'Chào hỏi người lớn đúng cách',icon:'👋',steps:[
+    {id:'cnl1',emoji:'👀',label:'Gặp người lớn quen'},
+    {id:'cnl2',emoji:'🛑',label:'Dừng lại'},
+    {id:'cnl3',emoji:'😊',label:'Mỉm cười'},
+    {id:'cnl4',emoji:'🗣️',label:'Nói "Cháu chào ông/bà/cô/chú ạ"'},
+    {id:'cnl5',emoji:'🙇',label:'Cúi đầu nhẹ'},
+  ]},
+];
+
+// Social Skills state
+let currentSSLesson = null;
+let ssSlotContents = [];
+let ssDone = new Set(JSON.parse(localStorage.getItem('ss_done')||'[]'));
+let ssDraggingStep = null;
+
+function initSocialSkills() {
+  renderSSLessonList();
+  updateSSProgress();
+}
+
+function filterSSLessons() {
+  const q = document.getElementById('ssSearch').value.toLowerCase();
+  renderSSLessonList(q);
+}
+
+function renderSSLessonList(filter='') {
+  const cats = {};
+  SS_LESSONS.forEach(l => {
+    if(filter && !l.title.toLowerCase().includes(filter)) return;
+    if(!cats[l.cat]) cats[l.cat] = { label: l.cat_label, items: [] };
+    cats[l.cat].items.push(l);
+  });
+  let html = '';
+  Object.values(cats).forEach(cat => {
+    html += `<div class="ss-cat-label">${cat.label}</div>`;
+    cat.items.forEach(l => {
+      const done = ssDone.has(l.id);
+      const active = currentSSLesson?.id === l.id;
+      html += `<div class="ss-lesson-item${active?' active':''}${done?' done':''}" onclick="selectSSLesson('${l.id}')">
+        <span>${l.icon}</span><span>${l.title}</span>
+      </div>`;
+    });
+  });
+  document.getElementById('ssLessonList').innerHTML = html || '<div style="color:#aaa;font-size:0.8rem">Không tìm thấy</div>';
+}
+
+function selectSSLesson(id) {
+  currentSSLesson = SS_LESSONS.find(l => l.id === id);
+  if(!currentSSLesson) return;
+  ssSlotContents = new Array(currentSSLesson.steps.length).fill(null);
+  renderSSLessonList(document.getElementById('ssSearch').value.toLowerCase());
+  document.getElementById('ssLessonTitle').textContent = currentSSLesson.icon + ' ' + currentSSLesson.title;
+  document.getElementById('ssLessonDesc').textContent = `${currentSSLesson.steps.length} bước thực hiện`;
+  renderSSStepBank();
+  renderSSOrderSlots();
+  document.getElementById('ssBtnCheck').disabled = true;
+  document.getElementById('ssFeedback').className = 'result-feedback';
+  document.getElementById('ssVideoBox').innerHTML = '<div class="vid-msg">🌟 Sắp xếp đúng thứ tự để xem video!</div>';
+  document.getElementById('ssVideoInfo').textContent = '';
+}
+
+function renderSSStepBank() {
+  if(!currentSSLesson) return;
+  const usedIds = ssSlotContents.filter(Boolean);
+  const shuffled = [...currentSSLesson.steps].sort(() => Math.random() - 0.5);
+  document.getElementById('ssStepBank').innerHTML = shuffled.map(s => `
+    <div class="ss-step-card${usedIds.includes(s.id)?' used':''}" id="ssc_${s.id}"
+      draggable="true"
+      ondragstart="onSSDragStart(event,'${s.id}')"
+      onclick="clickSSStepToSlot('${s.id}')">
+      <span class="ss-step-emoji">${s.emoji}</span>
+      <span>${s.label}</span>
+    </div>`).join('');
+}
+
+function renderSSOrderSlots() {
+  if(!currentSSLesson) return;
+  document.getElementById('ssOrderSlots').innerHTML = currentSSLesson.steps.map((_, i) => {
+    const filled = ssSlotContents[i];
+    const step = filled ? currentSSLesson.steps.find(s => s.id === filled) : null;
+    return `<div class="ss-order-slot${filled?' filled':''}" id="ssslot_${i}"
+      ondragover="onSSSlotDragOver(event,${i})"
+      ondrop="onSSSlotDrop(event,${i})"
+      ondragleave="onSSSlotDragLeave(event)"
+    >
+      <span class="ss-slot-num">${i+1}</span>
+      <span class="ss-slot-content">
+        ${step ? `<span class="ss-step-emoji">${step.emoji}</span><span>${step.label}</span>`
+               : `<span class="ss-slot-empty-hint">👉 Kéo thẻ vào đây</span>`}
+      </span>
+      ${filled ? `<button style="background:none;border:none;color:#ddd;cursor:pointer;font-size:14px" onclick="removeSSFromSlot(${i})">✕</button>` : ''}
+    </div>`;
+  }).join('');
+  document.getElementById('ssBtnCheck').disabled = ssSlotContents.some(s => s === null);
+}
+
+function clickSSStepToSlot(stepId) {
+  if(!currentSSLesson) return;
+  const slotIdx = ssSlotContents.indexOf(stepId);
+  if(slotIdx >= 0) { removeSSFromSlot(slotIdx); return; }
+  const empty = ssSlotContents.indexOf(null);
+  if(empty < 0) { showToast('⚠️ Tất cả ô đã đầy!'); return; }
+  ssSlotContents[empty] = stepId;
+  renderSSOrderSlots();
+  updateSSStepBankUsed();
+}
+
+function removeSSFromSlot(i) {
+  ssSlotContents[i] = null;
+  renderSSOrderSlots();
+  updateSSStepBankUsed();
+  document.getElementById('ssBtnCheck').disabled = true;
+  document.querySelectorAll('.ss-order-slot').forEach(el => el.classList.remove('correct','wrong'));
+}
+
+function updateSSStepBankUsed() {
+  const usedIds = ssSlotContents.filter(Boolean);
+  document.querySelectorAll('.ss-step-card').forEach(el => {
+    const sid = el.id.replace('ssc_','');
+    el.classList.toggle('used', usedIds.includes(sid));
+  });
+}
+
+function onSSDragStart(e, stepId) {
+  ssDraggingStep = stepId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+  setTimeout(() => e.currentTarget.classList.remove('dragging'), 200);
+}
+function onSSSlotDragOver(e, i) {
+  e.preventDefault();
+  document.getElementById('ssslot_'+i).classList.add('drag-over');
+}
+function onSSSlotDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+function onSSSlotDrop(e, i) {
+  e.preventDefault();
+  document.getElementById('ssslot_'+i).classList.remove('drag-over');
+  if(!ssDraggingStep) return;
+  const prev = ssSlotContents.indexOf(ssDraggingStep);
+  if(prev >= 0) ssSlotContents[prev] = null;
+  ssSlotContents[i] = ssDraggingStep;
+  ssDraggingStep = null;
+  renderSSOrderSlots();
+  updateSSStepBankUsed();
+}
+
+function checkSSOrder() {
+  if(!currentSSLesson) return;
+  const correct = currentSSLesson.steps.map(s => s.id);
+  const isCorrect = correct.every((id, i) => ssSlotContents[i] === id);
+  document.querySelectorAll('.ss-order-slot').forEach((el, i) => {
+    el.classList.remove('correct','wrong');
+    if(ssSlotContents[i]) el.classList.add(ssSlotContents[i] === correct[i] ? 'correct' : 'wrong');
+  });
+  const feedback = document.getElementById('ssFeedback');
+  if(isCorrect) {
+    feedback.textContent = '🎉 Giỏi lắm! Bé đã làm đúng rồi! Xem video nào! 🌟';
+    feedback.className = 'result-feedback success';
+    playSSVideo();
+    ssDone.add(currentSSLesson.id);
+    localStorage.setItem('ss_done', JSON.stringify([...ssDone]));
+    updateSSProgress();
+    renderSSLessonList(document.getElementById('ssSearch').value.toLowerCase());
+    showToast('⭐ Hoàn thành: ' + currentSSLesson.title);
+  } else {
+    const wrong = ssSlotContents.filter((id,i) => id && id !== correct[i]).length;
+    feedback.textContent = `❌ Có ${wrong} bước chưa đúng. Thử lại nhé bé! 💪`;
+    feedback.className = 'result-feedback fail';
+    showToast('❌ Chưa đúng, thử lại nhé!');
+  }
+}
+
+function playSSVideo() {
+  const videoEl = document.getElementById('ssVideoBox');
+  const infoEl = document.getElementById('ssVideoInfo');
+  const src = `/videos/social/${currentSSLesson.id}.mp4`;
+  videoEl.innerHTML = `<video controls autoplay style="width:100%;height:100%;object-fit:cover">
+    <source src="${src}" type="video/mp4">
+  </video>`;
+  videoEl.querySelector('video').addEventListener('error', () => {
+    videoEl.innerHTML = `<div class="vid-msg">
+      📁 Chưa có video cho bài này<br>
+      <code style="font-size:0.72rem;background:#333;color:#fff;padding:2px 6px;border-radius:4px">${src}</code><br><br>
+      Upload file vào <b>public/videos/social/</b>
+    </div>`;
+    infoEl.textContent = '';
+  });
+  infoEl.textContent = `📂 ${src}`;
+}
+
+function resetSSLesson() {
+  if(!currentSSLesson) return;
+  ssSlotContents = new Array(currentSSLesson.steps.length).fill(null);
+  renderSSStepBank();
+  renderSSOrderSlots();
+  document.getElementById('ssBtnCheck').disabled = true;
+  document.getElementById('ssFeedback').className = 'result-feedback';
+  document.getElementById('ssVideoBox').innerHTML = '<div class="vid-msg">🌟 Sắp xếp đúng thứ tự để xem video!</div>';
+}
+
+function updateSSProgress() {
+  const done = ssDone.size;
+  const total = SS_LESSONS.length;
+  document.getElementById('ssDoneCount').textContent = done;
+  document.getElementById('ssTotalCount').textContent = total;
+  document.getElementById('ssProgressFill').style.width = (done/total*100)+'%';
+  // Star row
+  document.getElementById('ssStarRow').innerHTML =
+    Array.from({length: total}, (_, i) => `<span style="opacity:${ssDone.has(SS_LESSONS[i]?.id)?1:0.2}">⭐</span>`).join('');
 }
 
 // ===== TOAST =====

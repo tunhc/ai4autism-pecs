@@ -46,9 +46,83 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
 .grade-tab.g1 { color: var(--grade1-primary); }
 .grade-tab.g2 { color: var(--grade2-primary); }
 .grade-tab.g3 { color: var(--grade3-primary); }
+.grade-tab.g4 { color: #16a34a; }
 .grade-tab.active.g1 { background: var(--grade1-primary); color: #fff; border-color: var(--grade1-primary); }
 .grade-tab.active.g2 { background: var(--grade2-primary); color: #fff; border-color: var(--grade2-primary); }
 .grade-tab.active.g3 { background: var(--grade3-primary); color: #fff; border-color: var(--grade3-primary); }
+.grade-tab.active.g4 { background: #16a34a; color: #fff; border-color: #16a34a; }
+
+/* JOB4AUTISM */
+.lesson-list { display: flex; flex-direction: column; gap: 5px; }
+.lesson-item {
+  padding: 9px 12px; border-radius: 10px; cursor: pointer; font-size: 0.82rem; font-weight: 600;
+  border: 2px solid transparent; background: var(--soft); transition: all 0.15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.lesson-item:hover { background: #d1fae5; border-color: #6ee7b7; }
+.lesson-item.active { background: #16a34a; color: white; border-color: #16a34a; }
+.lesson-item.done { border-color: #6ee7b7; }
+.lesson-item.done::after { content: '✅'; margin-left: auto; font-size: 12px; }
+.cat-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #16a34a; margin: 10px 0 4px; }
+
+.job-search { width: 100%; padding: 7px 10px; border: 2px solid var(--border); border-radius: 10px; font-size: 0.82rem; outline: none; margin-bottom: 10px; }
+.job-search:focus { border-color: #16a34a; }
+
+.step-bank { display: flex; flex-wrap: wrap; gap: 8px; min-height: 50px; padding: 10px; background: #f0fdf4; border-radius: 12px; border: 2px dashed #86efac; margin-bottom: 12px; }
+.step-card {
+  background: white; border: 2px solid #86efac; border-radius: 10px;
+  padding: 8px 12px; display: flex; align-items: center; gap: 6px;
+  font-size: 0.82rem; font-weight: 600; cursor: grab; user-select: none;
+  transition: all 0.15s; animation: popIn 0.2s ease;
+}
+.step-card:hover { background: #f0fdf4; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+.step-card:active { cursor: grabbing; transform: scale(0.96); }
+.step-card.dragging { opacity: 0.3; }
+.step-card.used { opacity: 0.3; pointer-events: none; }
+
+.order-slots { display: flex; flex-direction: column; gap: 8px; }
+.order-slot {
+  display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+  border: 2px dashed #d1d5db; border-radius: 10px; min-height: 48px;
+  transition: all 0.2s; background: white;
+}
+.order-slot.drag-over { border-color: #16a34a; background: #f0fdf4; }
+.order-slot.filled { border-color: #86efac; background: #f0fdf4; border-style: solid; }
+.order-slot.correct { border-color: #16a34a; background: #dcfce7; }
+.order-slot.wrong { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
+.slot-num { width: 24px; height: 24px; border-radius: 50%; background: #e5e7eb; color: #666; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.order-slot.filled .slot-num { background: #16a34a; color: white; }
+.order-slot.correct .slot-num { background: #16a34a; color: white; }
+.order-slot.wrong .slot-num { background: #ef4444; color: white; }
+.slot-content { flex: 1; display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; }
+.slot-empty-hint { color: #bbb; font-size: 0.78rem; }
+.slot-remove { background: none; border: none; color: #ccc; cursor: pointer; font-size: 14px; padding: 2px; }
+.slot-remove:hover { color: #ef4444; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+
+.btn-check {
+  width: 100%; padding: 11px; border: none; border-radius: 12px; margin-top: 12px;
+  background: #16a34a; color: white; font-size: 0.9rem; font-weight: 800;
+  cursor: pointer; transition: all 0.2s; letter-spacing: 0.3px;
+}
+.btn-check:hover:not(:disabled) { background: #15803d; transform: translateY(-1px); }
+.btn-check:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.job-video-box {
+  width: 100%; border-radius: 14px; overflow: hidden; background: #111;
+  aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--border);
+}
+.job-video-box video { width: 100%; height: 100%; object-fit: cover; }
+.job-video-box .vid-msg { color: #666; text-align: center; padding: 20px; font-size: 0.82rem; line-height: 1.6; }
+
+.result-feedback { border-radius: 12px; padding: 14px; margin-bottom: 12px; font-weight: 600; font-size: 0.88rem; text-align: center; display: none; }
+.result-feedback.success { background: #dcfce7; color: #15803d; border: 2px solid #86efac; display: block; }
+.result-feedback.fail { background: #fef2f2; color: #dc2626; border: 2px solid #fca5a5; display: block; }
+
+.job-progress-bar { height: 6px; background: #e5e7eb; border-radius: 20px; margin-top: 8px; overflow: hidden; }
+.job-progress-fill { height: 100%; background: #16a34a; border-radius: 20px; transition: width 0.4s ease; }
+.job-stats { display: flex; justify-content: space-between; font-size: 0.75rem; color: #666; margin-top: 4px; }
 
 .main { display: grid; grid-template-columns: 260px 1fr 300px; gap: 16px; padding: 16px 24px; align-items: start; }
 @media (max-width: 768px) { .main { grid-template-columns: 1fr; } }
@@ -265,6 +339,7 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   <button class="grade-tab g1 active" onclick="switchGrade(1)">🎨 Tiểu học (L1–5)</button>
   <button class="grade-tab g2" onclick="switchGrade(2)">🌊 THCS (L6–9)</button>
   <button class="grade-tab g3" onclick="switchGrade(3)">🎬 THPT (L10–12)</button>
+  <button class="grade-tab g4" onclick="switchGrade(4)">🏭 Job4Autism</button>
 </div>
 
 <!-- ===== GRADE 1 ===== -->
@@ -483,6 +558,56 @@ header h1 span { opacity: 0.85; font-size: 1rem; margin-left: 8px; }
   </div>
 </div>
 
+<!-- ===== GRADE 4: JOB4AUTISM ===== -->
+<div id="grade4" class="main" style="display:none">
+  <!-- LEFT: Lesson list -->
+  <div class="panel panel-sticky">
+    <div class="panel-title">🏭 Danh sách bài học</div>
+    <input class="job-search" id="jobSearch" placeholder="🔍 Tìm bài học..." oninput="filterLessons()">
+    <div id="lessonList" class="lesson-list"></div>
+    <div class="divider"></div>
+    <div class="panel-title" style="font-size:0.82rem">📊 Tiến độ</div>
+    <div class="job-progress-bar"><div class="job-progress-fill" id="jobProgressFill" style="width:0%"></div></div>
+    <div class="job-stats"><span id="jobDoneCount">0</span>/<span id="jobTotalCount">50</span> bài hoàn thành</div>
+  </div>
+
+  <!-- MIDDLE: Drag-drop ordering -->
+  <div class="panel">
+    <div id="jobLessonHeader" style="margin-bottom:14px">
+      <div class="panel-title" id="jobLessonTitle" style="font-size:1rem">👈 Chọn bài học để bắt đầu</div>
+      <div id="jobLessonDesc" style="font-size:0.8rem;color:#888"></div>
+    </div>
+
+    <div class="panel-title" style="font-size:0.82rem">🃏 Các bước công việc — kéo thả để sắp xếp</div>
+    <div id="stepBank" class="step-bank">
+      <span style="color:#bbb;font-size:0.8rem">Chọn bài học để xem các bước</span>
+    </div>
+
+    <div class="panel-title" style="font-size:0.82rem">📋 Thứ tự thực hiện</div>
+    <div id="orderSlots" class="order-slots"></div>
+
+    <button class="btn-check" id="btnCheck" onclick="checkOrder()" disabled>✅ Kiểm tra thứ tự</button>
+    <button class="ai-btn" style="background:#6BCB77;color:white;width:100%;margin-top:6px;justify-content:center" onclick="resetLesson()">🔄 Làm lại</button>
+  </div>
+
+  <!-- RIGHT: Feedback + video -->
+  <div class="panel">
+    <div class="panel-title">🎬 Video hướng dẫn</div>
+    <div id="jobFeedback" class="result-feedback"></div>
+    <div class="job-video-box" id="jobVideoBox">
+      <div class="vid-msg">
+        🎯 Sắp xếp đúng thứ tự các bước<br>để xem video hướng dẫn
+      </div>
+    </div>
+    <div id="jobVideoInfo" style="font-size:0.75rem;color:#888;margin-top:6px;text-align:center"></div>
+    <div style="margin-top:14px;padding:12px;background:#f0fdf4;border-radius:10px;font-size:0.78rem;color:#16a34a;line-height:1.7">
+      <b>📁 Upload video:</b><br>
+      Đặt file vào <code>public/videos/{id}.mp4</code><br>
+      Push lên GitHub → Vercel tự serve
+    </div>
+  </div>
+</div>
+
 <!-- Modal đã bỏ — API keys quản lý qua .env trên server -->
 
 <div id="toast" class="toast"></div>
@@ -591,16 +716,17 @@ function init(){
   renderKwPanel();
   renderStyleGrid();
   renderAllGrids();
+  initJob4Autism();
 }
 
 // ===== GRADE SWITCH =====
 function switchGrade(g){
   currentGrade=g;
-  [1,2,3].forEach(n=>{
+  [1,2,3,4].forEach(n=>{
     document.getElementById('grade'+n).style.display=n===g?'grid':'none';
     document.querySelectorAll('.grade-tab')[n-1].classList.toggle('active',n===g);
   });
-  const p={1:'#FF6B6B',2:'#6C63FF',3:'#1A1A2E'};
+  const p={1:'#FF6B6B',2:'#6C63FF',3:'#1A1A2E',4:'#16a34a'};
   document.documentElement.style.setProperty('--current-primary',p[g]);
 }
 
@@ -1034,6 +1160,565 @@ function renderAllGrids(){
     }
     grid.innerHTML=html;
   });
+}
+
+// ===== JOB4AUTISM DATA (50 lessons) =====
+const LESSONS = [
+  // ── LẮP RÁP & SẢN XUẤT ──
+  {id:'lap-rap-hop',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Lắp ráp hộp sản phẩm',icon:'📦',steps:[
+    {id:'a1',icon:'🖐️',label:'Lấy hộp từ kệ'},
+    {id:'a2',icon:'🔍',label:'Kiểm tra hộp không bị hỏng'},
+    {id:'a3',icon:'📥',label:'Đặt sản phẩm vào hộp'},
+    {id:'a4',icon:'📎',label:'Gấp và đóng nắp hộp'},
+    {id:'a5',icon:'🏷️',label:'Dán nhãn lên hộp'},
+  ]},
+  {id:'dong-goi-keo',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Đóng gói kẹo/bánh',icon:'🍬',steps:[
+    {id:'b1',icon:'🧤',label:'Đeo găng tay'},
+    {id:'b2',icon:'⚖️',label:'Cân đúng khối lượng'},
+    {id:'b3',icon:'🛍️',label:'Cho vào túi đóng gói'},
+    {id:'b4',icon:'🔒',label:'Hàn miệng túi'},
+    {id:'b5',icon:'🏷️',label:'Dán nhãn thông tin'},
+  ]},
+  {id:'dan-nhan',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Dán nhãn sản phẩm',icon:'🏷️',steps:[
+    {id:'c1',icon:'📋',label:'Đọc thông tin nhãn'},
+    {id:'c2',icon:'✂️',label:'Cắt nhãn đúng kích cỡ'},
+    {id:'c3',icon:'🧹',label:'Lau sạch bề mặt dán'},
+    {id:'c4',icon:'📐',label:'Căn chỉnh vị trí nhãn'},
+    {id:'c5',icon:'👆',label:'Dán và ép chặt nhãn'},
+  ]},
+  {id:'phan-loai-mau',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Phân loại màu sắc sản phẩm',icon:'🎨',steps:[
+    {id:'d1',icon:'👀',label:'Xem bảng phân loại màu'},
+    {id:'d2',icon:'📦',label:'Chuẩn bị các thùng màu'},
+    {id:'d3',icon:'🔍',label:'Kiểm tra màu sản phẩm'},
+    {id:'d4',icon:'🤲',label:'Đặt vào đúng thùng'},
+    {id:'d5',icon:'✅',label:'Đếm và ghi số lượng'},
+  ]},
+  {id:'kiem-tra-chat-luong',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Kiểm tra chất lượng',icon:'🔍',steps:[
+    {id:'e1',icon:'📋',label:'Xem tiêu chuẩn kiểm tra'},
+    {id:'e2',icon:'👁️',label:'Kiểm tra ngoại quan'},
+    {id:'e3',icon:'📏',label:'Đo kích thước'},
+    {id:'e4',icon:'⚖️',label:'Kiểm tra trọng lượng'},
+    {id:'e5',icon:'✅',label:'Đóng dấu đạt/không đạt'},
+  ]},
+  {id:'lap-rap-but',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Lắp ráp bút bi',icon:'✒️',steps:[
+    {id:'f1',icon:'🗂️',label:'Lấy đủ linh kiện'},
+    {id:'f2',icon:'🔧',label:'Lắp ruột bút vào thân'},
+    {id:'f3',icon:'🔩',label:'Vặn chặt đầu bút'},
+    {id:'f4',icon:'✏️',label:'Thử viết kiểm tra'},
+    {id:'f5',icon:'📦',label:'Đặt vào hộp đóng gói'},
+  ]},
+  {id:'boc-bubble',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Bọc sản phẩm bằng bubble wrap',icon:'🫧',steps:[
+    {id:'g1',icon:'📏',label:'Đo kích thước sản phẩm'},
+    {id:'g2',icon:'✂️',label:'Cắt bubble wrap vừa đủ'},
+    {id:'g3',icon:'📦',label:'Đặt sản phẩm lên bubble'},
+    {id:'g4',icon:'🔄',label:'Cuộn và gấp bubble xung quanh'},
+    {id:'g5',icon:'🔒',label:'Dán băng keo cố định'},
+  ]},
+  {id:'dong-chai',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Đóng chai nước/sản phẩm lỏng',icon:'🍶',steps:[
+    {id:'h1',icon:'🧤',label:'Đeo găng tay bảo hộ'},
+    {id:'h2',icon:'🫙',label:'Lấy chai sạch đã rửa'},
+    {id:'h3',icon:'🚰',label:'Rót sản phẩm đúng mức'},
+    {id:'h4',icon:'🔒',label:'Đóng nắp và vặn chặt'},
+    {id:'h5',icon:'🏷️',label:'Dán nhãn và date sản xuất'},
+  ]},
+  {id:'xep-kich-co',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Xếp hàng theo kích thước',icon:'📐',steps:[
+    {id:'i1',icon:'👀',label:'Xem mẫu xếp hàng'},
+    {id:'i2',icon:'📏',label:'Đo và nhóm sản phẩm'},
+    {id:'i3',icon:'🔢',label:'Xếp từ nhỏ đến lớn'},
+    {id:'i4',icon:'✅',label:'Kiểm tra lại thứ tự'},
+    {id:'i5',icon:'📦',label:'Đưa vào kho'},
+  ]},
+  {id:'dan-tem-niem-phong',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Dán tem niêm phong',icon:'🔏',steps:[
+    {id:'j1',icon:'✅',label:'Xác nhận sản phẩm đã đóng gói'},
+    {id:'j2',icon:'🧹',label:'Lau sạch vị trí dán tem'},
+    {id:'j3',icon:'🏷️',label:'Lấy tem niêm phong'},
+    {id:'j4',icon:'📐',label:'Căn đúng vị trí'},
+    {id:'j5',icon:'👆',label:'Ép chặt tem'},
+  ]},
+  {id:'lap-rap-do-choi',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Lắp ráp đồ chơi đơn giản',icon:'🧸',steps:[
+    {id:'k1',icon:'📋',label:'Đọc hướng dẫn lắp ráp'},
+    {id:'k2',icon:'🗂️',label:'Sắp xếp linh kiện theo thứ tự'},
+    {id:'k3',icon:'🔧',label:'Lắp phần thân chính'},
+    {id:'k4',icon:'🔩',label:'Gắn các phụ kiện'},
+    {id:'k5',icon:'🎮',label:'Kiểm tra hoạt động'},
+  ]},
+  {id:'dem-phan-loai',cat:'assembly',cat_label:'🔩 Lắp ráp & Sản xuất',title:'Đếm và phân loại linh kiện',icon:'🔢',steps:[
+    {id:'l1',icon:'📋',label:'Xem yêu cầu số lượng'},
+    {id:'l2',icon:'🗂️',label:'Chuẩn bị khay đựng'},
+    {id:'l3',icon:'🤲',label:'Lấy từng linh kiện'},
+    {id:'l4',icon:'🔢',label:'Đếm đúng số lượng'},
+    {id:'l5',icon:'📦',label:'Đặt vào đúng khay'},
+  ]},
+  // ── BÁN HÀNG & PHỤC VỤ ──
+  {id:'chao-don-khach',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Chào đón khách hàng',icon:'👋',steps:[
+    {id:'m1',icon:'😊',label:'Đứng tư thế chào đón'},
+    {id:'m2',icon:'👋',label:'Chào khách khi vào cửa'},
+    {id:'m3',icon:'❓',label:'Hỏi khách cần giúp gì'},
+    {id:'m4',icon:'👉',label:'Hướng dẫn đến đúng khu vực'},
+    {id:'m5',icon:'😊',label:'Cảm ơn và chúc khách'},
+  ]},
+  {id:'tinh-tien',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Tính tiền và trả tiền thừa',icon:'💰',steps:[
+    {id:'n1',icon:'🛒',label:'Quét mã vạch từng sản phẩm'},
+    {id:'n2',icon:'🔢',label:'Báo tổng tiền cho khách'},
+    {id:'n3',icon:'💵',label:'Nhận tiền từ khách'},
+    {id:'n4',icon:'🧮',label:'Tính tiền thừa'},
+    {id:'n5',icon:'💰',label:'Trả lại tiền thừa và hóa đơn'},
+  ]},
+  {id:'dong-goi-order',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Đóng gói order online',icon:'📫',steps:[
+    {id:'o1',icon:'📋',label:'In phiếu order'},
+    {id:'o2',icon:'🔍',label:'Xác nhận sản phẩm đúng'},
+    {id:'o3',icon:'📦',label:'Đặt vào hộp/túi đóng gói'},
+    {id:'o4',icon:'🔒',label:'Dán băng keo và niêm phong'},
+    {id:'o5',icon:'🏷️',label:'Dán địa chỉ giao hàng'},
+  ]},
+  {id:'sap-xep-ke',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Sắp xếp hàng lên kệ',icon:'🏪',steps:[
+    {id:'p1',icon:'📦',label:'Lấy hàng từ kho'},
+    {id:'p2',icon:'🔍',label:'Kiểm tra hạn dùng'},
+    {id:'p3',icon:'🔄',label:'Đẩy hàng cũ ra trước'},
+    {id:'p4',icon:'📥',label:'Xếp hàng mới vào sau'},
+    {id:'p5',icon:'✅',label:'Chỉnh nhãn giá ngay ngắn'},
+  ]},
+  {id:'phuc-vu-do-uong',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Phục vụ đồ uống',icon:'☕',steps:[
+    {id:'q1',icon:'📋',label:'Nhận order của khách'},
+    {id:'q2',icon:'🧼',label:'Rửa tay / đeo găng'},
+    {id:'q3',icon:'☕',label:'Pha chế theo công thức'},
+    {id:'q4',icon:'🍹',label:'Trang trí và kiểm tra'},
+    {id:'q5',icon:'🙏',label:'Mang ra và chúc khách'},
+  ]},
+  {id:'kiem-ke-hang',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Kiểm kê hàng tồn kho',icon:'📊',steps:[
+    {id:'r1',icon:'📋',label:'Lấy danh sách cần kiểm'},
+    {id:'r2',icon:'👀',label:'Đến đúng vị trí hàng'},
+    {id:'r3',icon:'🔢',label:'Đếm số lượng thực tế'},
+    {id:'r4',icon:'✏️',label:'Ghi vào phiếu kiểm kê'},
+    {id:'r5',icon:'📤',label:'Nộp phiếu cho quản lý'},
+  ]},
+  {id:'xu-ly-doi-tra',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Xử lý đổi/trả hàng',icon:'🔄',steps:[
+    {id:'s1',icon:'👂',label:'Lắng nghe lý do của khách'},
+    {id:'s2',icon:'🔍',label:'Kiểm tra sản phẩm và hóa đơn'},
+    {id:'s3',icon:'📋',label:'Điền phiếu đổi/trả'},
+    {id:'s4',icon:'📦',label:'Nhận lại hàng và đổi mới'},
+    {id:'s5',icon:'😊',label:'Xin lỗi và cảm ơn khách'},
+  ]},
+  {id:'quet-ma-vach',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Quét mã vạch và nhập kho',icon:'📲',steps:[
+    {id:'t1',icon:'🔌',label:'Bật máy quét mã vạch'},
+    {id:'t2',icon:'📦',label:'Lấy sản phẩm cần nhập'},
+    {id:'t3',icon:'📲',label:'Quét mã vạch sản phẩm'},
+    {id:'t4',icon:'🔢',label:'Nhập số lượng vào hệ thống'},
+    {id:'t5',icon:'✅',label:'Xác nhận và in phiếu nhập'},
+  ]},
+  {id:'van-hanh-pos',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Vận hành máy POS cơ bản',icon:'💳',steps:[
+    {id:'u1',icon:'🔑',label:'Đăng nhập vào hệ thống POS'},
+    {id:'u2',icon:'🛒',label:'Chọn sản phẩm trong menu'},
+    {id:'u3',icon:'💰',label:'Nhập số tiền khách trả'},
+    {id:'u4',icon:'💳',label:'Xử lý thanh toán'},
+    {id:'u5',icon:'🧾',label:'In hóa đơn và đưa cho khách'},
+  ]},
+  {id:'giao-hang-noi-bo',cat:'service',cat_label:'🛒 Bán hàng & Phục vụ',title:'Giao hàng nội bộ',icon:'🚶',steps:[
+    {id:'v1',icon:'📋',label:'Nhận phiếu giao hàng'},
+    {id:'v2',icon:'📦',label:'Lấy đúng kiện hàng'},
+    {id:'v3',icon:'🗺️',label:'Xác nhận địa chỉ nhận'},
+    {id:'v4',icon:'🚶',label:'Đi giao hàng'},
+    {id:'v5',icon:'✍️',label:'Lấy chữ ký xác nhận'},
+  ]},
+  // ── VỆ SINH & TỔ CHỨC ──
+  {id:'don-dep-ban',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Dọn dẹp bàn làm việc',icon:'🗂️',steps:[
+    {id:'w1',icon:'📦',label:'Cất đồ dùng về đúng chỗ'},
+    {id:'w2',icon:'🗑️',label:'Bỏ rác vào thùng'},
+    {id:'w3',icon:'🧽',label:'Lau bề mặt bàn'},
+    {id:'w4',icon:'🖊️',label:'Sắp xếp dụng cụ gọn gàng'},
+    {id:'w5',icon:'✅',label:'Kiểm tra lần cuối'},
+  ]},
+  {id:'phan-loai-rac',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Thu gom rác phân loại',icon:'♻️',steps:[
+    {id:'x1',icon:'🧤',label:'Đeo găng tay'},
+    {id:'x2',icon:'🗑️',label:'Lấy túi rác đúng màu'},
+    {id:'x3',icon:'♻️',label:'Phân loại rác tái chế/hữu cơ'},
+    {id:'x4',icon:'🔒',label:'Buộc chặt túi rác'},
+    {id:'x5',icon:'🚮',label:'Mang đến điểm thu gom'},
+  ]},
+  {id:'lau-san',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Lau chùi sàn nhà',icon:'🧹',steps:[
+    {id:'y1',icon:'🪣',label:'Chuẩn bị nước và chất tẩy'},
+    {id:'y2',icon:'🪑',label:'Dọn vật cản trên sàn'},
+    {id:'y3',icon:'🧹',label:'Quét bụi trước'},
+    {id:'y4',icon:'🫧',label:'Lau ướt từ trong ra ngoài'},
+    {id:'y5',icon:'💨',label:'Lau khô và kiểm tra'},
+  ]},
+  {id:'ve-sinh-toilet',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Vệ sinh toilet theo quy trình',icon:'🚽',steps:[
+    {id:'z1',icon:'🧤',label:'Mặc đồ bảo hộ đầy đủ'},
+    {id:'z2',icon:'🚿',label:'Xịt nước và chất tẩy rửa'},
+    {id:'z3',icon:'🪣',label:'Chà rửa bề mặt toilet'},
+    {id:'z4',icon:'🧴',label:'Lau gương và bồn rửa tay'},
+    {id:'z5',icon:'🧻',label:'Bổ sung giấy vệ sinh và xà bông'},
+  ]},
+  {id:'sap-xep-kho',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Sắp xếp kho hàng',icon:'🏗️',steps:[
+    {id:'aa1',icon:'📋',label:'Xem sơ đồ vị trí hàng'},
+    {id:'aa2',icon:'📦',label:'Phân loại hàng theo nhóm'},
+    {id:'aa3',icon:'🏷️',label:'Dán nhãn vị trí lên kệ'},
+    {id:'aa4',icon:'🤲',label:'Xếp hàng đúng vị trí'},
+    {id:'aa5',icon:'✅',label:'Kiểm tra lại sơ đồ'},
+  ]},
+  {id:'kiem-tra-truoc-mo-cua',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Kiểm tra vệ sinh trước mở cửa',icon:'🔑',steps:[
+    {id:'bb1',icon:'📋',label:'Lấy checklist vệ sinh'},
+    {id:'bb2',icon:'👀',label:'Kiểm tra từng khu vực'},
+    {id:'bb3',icon:'🧹',label:'Xử lý ngay điểm chưa sạch'},
+    {id:'bb4',icon:'✅',label:'Đánh dấu hoàn thành checklist'},
+    {id:'bb5',icon:'📤',label:'Báo cáo cho quản lý'},
+  ]},
+  {id:'thao-lap-gia-ke',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Tháo lắp giá kệ',icon:'🪜',steps:[
+    {id:'cc1',icon:'🔧',label:'Chuẩn bị dụng cụ'},
+    {id:'cc2',icon:'📦',label:'Dỡ hàng khỏi kệ'},
+    {id:'cc3',icon:'🔩',label:'Tháo bu-lông theo thứ tự'},
+    {id:'cc4',icon:'🔧',label:'Lắp lại kệ theo bản hướng dẫn'},
+    {id:'cc5',icon:'✅',label:'Kiểm tra độ chắc chắn'},
+  ]},
+  {id:'don-dep-sau-ca',cat:'cleaning',cat_label:'🧹 Vệ sinh & Tổ chức',title:'Dọn dẹp sau ca làm việc',icon:'🌙',steps:[
+    {id:'dd1',icon:'🛑',label:'Tắt máy móc an toàn'},
+    {id:'dd2',icon:'🧹',label:'Quét dọn khu vực làm việc'},
+    {id:'dd3',icon:'📦',label:'Cất dụng cụ về đúng chỗ'},
+    {id:'dd4',icon:'🔒',label:'Khoá tủ và két'},
+    {id:'dd5',icon:'📋',label:'Ký bàn giao ca'},
+  ]},
+  // ── VĂN PHÒNG & DATA ──
+  {id:'phan-loai-tai-lieu',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Phân loại tài liệu',icon:'🗂️',steps:[
+    {id:'ee1',icon:'📋',label:'Đọc hướng dẫn phân loại'},
+    {id:'ee2',icon:'📄',label:'Xem từng tài liệu'},
+    {id:'ee3',icon:'🗂️',label:'Đặt vào đúng nhóm hồ sơ'},
+    {id:'ee4',icon:'📎',label:'Kẹp tài liệu cùng nhóm'},
+    {id:'ee5',icon:'✅',label:'Kiểm tra lại các nhóm'},
+  ]},
+  {id:'dan-nhan-ho-so',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Dán nhãn hồ sơ',icon:'🏷️',steps:[
+    {id:'ff1',icon:'📋',label:'Xem danh sách hồ sơ cần dán'},
+    {id:'ff2',icon:'🖊️',label:'Viết thông tin lên nhãn'},
+    {id:'ff3',icon:'📁',label:'Lấy đúng file/bìa hồ sơ'},
+    {id:'ff4',icon:'📐',label:'Dán nhãn đúng vị trí'},
+    {id:'ff5',icon:'📦',label:'Xếp vào đúng ngăn tủ'},
+  ]},
+  {id:'nhap-du-lieu',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Nhập dữ liệu cơ bản',icon:'⌨️',steps:[
+    {id:'gg1',icon:'📋',label:'Mở file dữ liệu cần nhập'},
+    {id:'gg2',icon:'📄',label:'Lấy tài liệu gốc'},
+    {id:'gg3',icon:'⌨️',label:'Nhập từng trường thông tin'},
+    {id:'gg4',icon:'🔍',label:'Đối chiếu với tài liệu gốc'},
+    {id:'gg5',icon:'💾',label:'Lưu file và báo hoàn thành'},
+  ]},
+  {id:'in-dong-tap',cat:'office',cat_label:'💼 Văn phòng & Data',title:'In và đóng tập tài liệu',icon:'🖨️',steps:[
+    {id:'hh1',icon:'🖨️',label:'Bật máy in và kiểm tra mực'},
+    {id:'hh2',icon:'📄',label:'Đặt giấy vào khay in'},
+    {id:'hh3',icon:'🖥️',label:'Mở file và chọn lệnh in'},
+    {id:'hh4',icon:'📑',label:'Lấy bản in và xếp đúng thứ tự'},
+    {id:'hh5',icon:'📎',label:'Đóng bấm hoặc đóng gáy'},
+  ]},
+  {id:'sap-xep-ho-so-ngay',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Sắp xếp hồ sơ theo ngày',icon:'📅',steps:[
+    {id:'ii1',icon:'📂',label:'Lấy hồ sơ cần sắp xếp'},
+    {id:'ii2',icon:'📅',label:'Đọc ngày tháng trên mỗi file'},
+    {id:'ii3',icon:'🔢',label:'Xếp theo thứ tự ngày'},
+    {id:'ii4',icon:'📁',label:'Đặt vào bìa hồ sơ tương ứng'},
+    {id:'ii5',icon:'🗄️',label:'Cho vào tủ đúng năm/tháng'},
+  ]},
+  {id:'quet-luu-tai-lieu',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Quét và lưu tài liệu số',icon:'🖥️',steps:[
+    {id:'jj1',icon:'🖨️',label:'Bật máy scan'},
+    {id:'jj2',icon:'📄',label:'Đặt tài liệu lên khay scan'},
+    {id:'jj3',icon:'⚙️',label:'Chọn định dạng PDF/JPG'},
+    {id:'jj4',icon:'📲',label:'Nhấn scan và chờ'},
+    {id:'jj5',icon:'💾',label:'Đổi tên file và lưu đúng thư mục'},
+  ]},
+  {id:'chuan-bi-phong-hop',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Chuẩn bị phòng họp',icon:'🏢',steps:[
+    {id:'kk1',icon:'📋',label:'Xem số người tham dự'},
+    {id:'kk2',icon:'🪑',label:'Sắp xếp bàn ghế đủ chỗ'},
+    {id:'kk3',icon:'📊',label:'Kiểm tra máy chiếu/màn hình'},
+    {id:'kk4',icon:'💧',label:'Chuẩn bị nước và dụng cụ'},
+    {id:'kk5',icon:'✅',label:'Báo cáo phòng đã sẵn sàng'},
+  ]},
+  {id:'phan-loai-thu',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Phân loại thư và bưu phẩm',icon:'📬',steps:[
+    {id:'ll1',icon:'📬',label:'Nhận bưu phẩm từ bưu cục'},
+    {id:'ll2',icon:'👀',label:'Đọc tên người/bộ phận nhận'},
+    {id:'ll3',icon:'🗂️',label:'Xếp vào ô thư đúng tên'},
+    {id:'ll4',icon:'📋',label:'Ký nhận vào sổ bưu phẩm'},
+    {id:'ll5',icon:'📢',label:'Thông báo người nhận'},
+  ]},
+  {id:'kiem-tra-checklist-cuoi-ngay',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Kiểm tra checklist cuối ngày',icon:'✅',steps:[
+    {id:'mm1',icon:'📋',label:'Lấy checklist công việc ngày'},
+    {id:'mm2',icon:'👀',label:'Xem lại từng nhiệm vụ'},
+    {id:'mm3',icon:'✅',label:'Đánh dấu hoàn thành/chưa xong'},
+    {id:'mm4',icon:'📝',label:'Ghi chú việc cần làm ngày mai'},
+    {id:'mm5',icon:'📤',label:'Nộp checklist cho quản lý'},
+  ]},
+  {id:'gui-email-mau',cat:'office',cat_label:'💼 Văn phòng & Data',title:'Gửi email theo mẫu',icon:'📧',steps:[
+    {id:'nn1',icon:'📧',label:'Mở ứng dụng email'},
+    {id:'nn2',icon:'📋',label:'Chọn mẫu email phù hợp'},
+    {id:'nn3',icon:'✏️',label:'Điền thông tin vào mẫu'},
+    {id:'nn4',icon:'📎',label:'Đính kèm tài liệu nếu cần'},
+    {id:'nn5',icon:'📤',label:'Kiểm tra và nhấn Gửi'},
+  ]},
+  // ── KỸ NĂNG MỀM & AN TOÀN ──
+  {id:'an-toan-lao-dong',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Mặc trang bị bảo hộ lao động',icon:'🦺',steps:[
+    {id:'oo1',icon:'👟',label:'Đi giày bảo hộ'},
+    {id:'oo2',icon:'🧤',label:'Đeo găng tay'},
+    {id:'oo3',icon:'😷',label:'Đeo khẩu trang'},
+    {id:'oo4',icon:'🦺',label:'Mặc áo bảo hộ'},
+    {id:'oo5',icon:'⛑️',label:'Đội mũ bảo hộ nếu cần'},
+  ]},
+  {id:'xu-ly-su-co',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Xử lý sự cố nhỏ tại nơi làm việc',icon:'🚨',steps:[
+    {id:'pp1',icon:'🛑',label:'Dừng công việc ngay'},
+    {id:'pp2',icon:'📢',label:'Báo ngay cho người giám sát'},
+    {id:'pp3',icon:'🚧',label:'Cảnh báo khu vực nguy hiểm'},
+    {id:'pp4',icon:'🩹',label:'Sơ cứu nếu có người bị thương'},
+    {id:'pp5',icon:'📋',label:'Ghi nhật ký sự cố'},
+  ]},
+  {id:'nghi-giai-lao',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Quy trình nghỉ giải lao đúng cách',icon:'☕',steps:[
+    {id:'qq1',icon:'🔚',label:'Hoàn thành bước đang làm'},
+    {id:'qq2',icon:'⏰',label:'Kiểm tra giờ nghỉ'},
+    {id:'qq3',icon:'🪑',label:'Rời khỏi vị trí làm việc'},
+    {id:'qq4',icon:'☕',label:'Nghỉ ngơi đúng khu vực'},
+    {id:'qq5',icon:'⏰',label:'Quay lại đúng giờ'},
+  ]},
+  {id:'bao-cao-cong-viec',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Báo cáo tiến độ công việc',icon:'📊',steps:[
+    {id:'rr1',icon:'📋',label:'Xem kế hoạch đã giao'},
+    {id:'rr2',icon:'🔢',label:'Đếm số lượng đã hoàn thành'},
+    {id:'rr3',icon:'✏️',label:'Ghi vào phiếu báo cáo'},
+    {id:'rr4',icon:'📊',label:'So sánh với mục tiêu'},
+    {id:'rr5',icon:'📤',label:'Nộp báo cáo cho quản lý'},
+  ]},
+  {id:'giao-tiep-dong-nghiep',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Giao tiếp với đồng nghiệp',icon:'🤝',steps:[
+    {id:'ss1',icon:'😊',label:'Chào hỏi khi gặp mặt'},
+    {id:'ss2',icon:'👂',label:'Lắng nghe khi người khác nói'},
+    {id:'ss3',icon:'🙋',label:'Hỏi khi không hiểu'},
+    {id:'ss4',icon:'🤝',label:'Hỗ trợ khi đồng nghiệp cần'},
+    {id:'ss5',icon:'😊',label:'Cảm ơn khi được giúp'},
+  ]},
+  {id:'su-dung-may-moc',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Sử dụng máy móc an toàn',icon:'⚙️',steps:[
+    {id:'tt1',icon:'📋',label:'Đọc hướng dẫn sử dụng'},
+    {id:'tt2',icon:'🦺',label:'Mặc bảo hộ cần thiết'},
+    {id:'tt3',icon:'🔌',label:'Kiểm tra trước khi bật máy'},
+    {id:'tt4',icon:'⚙️',label:'Vận hành theo đúng quy trình'},
+    {id:'tt5',icon:'🔌',label:'Tắt máy và vệ sinh sau dùng'},
+  ]},
+  {id:'quan-ly-gio-lam',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Quản lý giờ làm việc',icon:'⏰',steps:[
+    {id:'uu1',icon:'⏰',label:'Đến đúng giờ làm'},
+    {id:'uu2',icon:'📲',label:'Chấm công khi vào'},
+    {id:'uu3',icon:'📋',label:'Nhận bàn giao công việc'},
+    {id:'uu4',icon:'✅',label:'Hoàn thành đúng thời hạn'},
+    {id:'uu5',icon:'📲',label:'Chấm công khi ra về'},
+  ]},
+  {id:'giu-bi-mat-cong-viec',cat:'safety',cat_label:'🦺 Kỹ năng & An toàn',title:'Giữ bí mật thông tin công ty',icon:'🔒',steps:[
+    {id:'vv1',icon:'📋',label:'Xác định thông tin cần bảo mật'},
+    {id:'vv2',icon:'🔒',label:'Không chia sẻ với người lạ'},
+    {id:'vv3',icon:'💻',label:'Đặt mật khẩu mạnh cho máy tính'},
+    {id:'vv4',icon:'🗑️',label:'Hủy tài liệu đúng cách'},
+    {id:'vv5',icon:'📢',label:'Báo cáo nếu bị rò rỉ thông tin'},
+  ]},
+];
+
+// Job4Autism state
+let currentLesson = null;
+let slotContents = []; // array of step ids in slots, null = empty
+let jobDone = new Set(JSON.parse(localStorage.getItem('job4a_done')||'[]'));
+let jobDraggingStep = null;
+
+function initJob4Autism() {
+  renderLessonList();
+  updateJobProgress();
+}
+
+function filterLessons() {
+  const q = document.getElementById('jobSearch').value.toLowerCase();
+  renderLessonList(q);
+}
+
+function renderLessonList(filter='') {
+  const cats = {};
+  LESSONS.forEach(l => {
+    if(filter && !l.title.toLowerCase().includes(filter) && !l.cat_label.toLowerCase().includes(filter)) return;
+    if(!cats[l.cat]) cats[l.cat] = { label: l.cat_label, items: [] };
+    cats[l.cat].items.push(l);
+  });
+  let html = '';
+  Object.values(cats).forEach(cat => {
+    html += `<div class="cat-label">${cat.label}</div>`;
+    cat.items.forEach(l => {
+      const done = jobDone.has(l.id);
+      const active = currentLesson?.id === l.id;
+      html += `<div class="lesson-item${active?' active':''}${done?' done':''}" onclick="selectLesson('${l.id}')">
+        <span>${l.icon}</span><span>${l.title}</span>
+      </div>`;
+    });
+  });
+  document.getElementById('lessonList').innerHTML = html || '<div style="color:#aaa;font-size:0.8rem">Không tìm thấy bài học</div>';
+}
+
+function selectLesson(id) {
+  currentLesson = LESSONS.find(l => l.id === id);
+  if(!currentLesson) return;
+  slotContents = new Array(currentLesson.steps.length).fill(null);
+  renderLessonList(document.getElementById('jobSearch').value.toLowerCase());
+  document.getElementById('jobLessonTitle').textContent = currentLesson.icon + ' ' + currentLesson.title;
+  document.getElementById('jobLessonDesc').textContent = `${currentLesson.steps.length} bước thực hiện`;
+  renderStepBank();
+  renderOrderSlots();
+  document.getElementById('btnCheck').disabled = true;
+  document.getElementById('jobFeedback').className = 'result-feedback';
+  document.getElementById('jobFeedback').textContent = '';
+  document.getElementById('jobVideoBox').innerHTML = '<div class="vid-msg">🎯 Sắp xếp đúng thứ tự các bước để xem video hướng dẫn</div>';
+  document.getElementById('jobVideoInfo').textContent = '';
+}
+
+function renderStepBank() {
+  if(!currentLesson) return;
+  const usedIds = slotContents.filter(Boolean);
+  const shuffled = [...currentLesson.steps].sort(() => Math.random() - 0.5);
+  document.getElementById('stepBank').innerHTML = shuffled.map(s => `
+    <div class="step-card${usedIds.includes(s.id)?' used':''}" id="sc_${s.id}"
+      draggable="true"
+      ondragstart="onJobDragStart(event,'${s.id}')"
+      onclick="clickStepToSlot('${s.id}')">
+      <span>${s.icon}</span><span>${s.label}</span>
+    </div>`).join('');
+}
+
+function renderOrderSlots() {
+  if(!currentLesson) return;
+  document.getElementById('orderSlots').innerHTML = currentLesson.steps.map((_, i) => {
+    const filled = slotContents[i];
+    const step = filled ? currentLesson.steps.find(s => s.id === filled) : null;
+    return `<div class="order-slot${filled?' filled':''}" id="slot_${i}"
+      ondragover="onSlotDragOver(event,${i})"
+      ondrop="onSlotDrop(event,${i})"
+      ondragleave="onSlotDragLeave(event)"
+      onclick="${filled?`removeFromSlot(${i})`:''}"
+    >
+      <span class="slot-num">${i+1}</span>
+      <span class="slot-content">
+        ${step ? `<span>${step.icon}</span><span>${step.label}</span>` : '<span class="slot-empty-hint">Kéo bước vào đây</span>'}
+      </span>
+      ${filled ? `<button class="slot-remove" onclick="removeFromSlot(${i})">✕</button>` : ''}
+    </div>`;
+  }).join('');
+  // Enable check button when all slots filled
+  document.getElementById('btnCheck').disabled = slotContents.some(s => s === null);
+}
+
+function clickStepToSlot(stepId) {
+  if(!currentLesson) return;
+  // If already in a slot, remove it
+  const slotIdx = slotContents.indexOf(stepId);
+  if(slotIdx >= 0) { removeFromSlot(slotIdx); return; }
+  // Find first empty slot
+  const empty = slotContents.indexOf(null);
+  if(empty < 0) { showToast('⚠️ Tất cả ô đã đầy, hãy xóa bớt'); return; }
+  slotContents[empty] = stepId;
+  renderOrderSlots();
+  updateStepBankUsed();
+}
+
+function removeFromSlot(i) {
+  slotContents[i] = null;
+  renderOrderSlots();
+  updateStepBankUsed();
+  document.getElementById('btnCheck').disabled = true;
+  // Clear correct/wrong classes
+  document.querySelectorAll('.order-slot').forEach(el => {
+    el.classList.remove('correct','wrong');
+  });
+}
+
+function updateStepBankUsed() {
+  const usedIds = slotContents.filter(Boolean);
+  document.querySelectorAll('.step-card').forEach(el => {
+    const sid = el.id.replace('sc_','');
+    el.classList.toggle('used', usedIds.includes(sid));
+  });
+}
+
+function onJobDragStart(e, stepId) {
+  jobDraggingStep = stepId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.classList.add('dragging');
+  setTimeout(() => e.currentTarget.classList.remove('dragging'), 200);
+}
+function onSlotDragOver(e, i) {
+  e.preventDefault();
+  document.getElementById('slot_'+i).classList.add('drag-over');
+}
+function onSlotDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+function onSlotDrop(e, i) {
+  e.preventDefault();
+  document.getElementById('slot_'+i).classList.remove('drag-over');
+  if(!jobDraggingStep) return;
+  // If step already in another slot, move it
+  const prev = slotContents.indexOf(jobDraggingStep);
+  if(prev >= 0) slotContents[prev] = null;
+  slotContents[i] = jobDraggingStep;
+  jobDraggingStep = null;
+  renderOrderSlots();
+  updateStepBankUsed();
+}
+
+function checkOrder() {
+  if(!currentLesson) return;
+  const correct = currentLesson.steps.map(s => s.id);
+  const isCorrect = correct.every((id, i) => slotContents[i] === id);
+
+  const slots = document.querySelectorAll('.order-slot');
+  slots.forEach((el, i) => {
+    el.classList.remove('correct','wrong');
+    if(slotContents[i]) {
+      el.classList.add(slotContents[i] === correct[i] ? 'correct' : 'wrong');
+    }
+  });
+
+  const feedback = document.getElementById('jobFeedback');
+  if(isCorrect) {
+    feedback.textContent = '🎉 Xuất sắc! Bạn đã sắp xếp đúng thứ tự. Hãy xem video hướng dẫn!';
+    feedback.className = 'result-feedback success';
+    playLessonVideo();
+    jobDone.add(currentLesson.id);
+    localStorage.setItem('job4a_done', JSON.stringify([...jobDone]));
+    updateJobProgress();
+    renderLessonList(document.getElementById('jobSearch').value.toLowerCase());
+    showToast('🎉 Hoàn thành bài: ' + currentLesson.title);
+  } else {
+    const wrongCount = slotContents.filter((id,i) => id && id !== correct[i]).length;
+    feedback.textContent = `❌ Có ${wrongCount} bước chưa đúng vị trí. Thử lại nhé!`;
+    feedback.className = 'result-feedback fail';
+    showToast('❌ Chưa đúng, thử lại!');
+  }
+}
+
+function playLessonVideo() {
+  const videoEl = document.getElementById('jobVideoBox');
+  const infoEl = document.getElementById('jobVideoInfo');
+  const src = `/videos/${currentLesson.id}.mp4`;
+  videoEl.innerHTML = `<video controls autoplay style="width:100%;height:100%;object-fit:cover">
+    <source src="${src}" type="video/mp4">
+  </video>`;
+  // Handle video not found
+  videoEl.querySelector('video').addEventListener('error', () => {
+    videoEl.innerHTML = `<div class="vid-msg">
+      📁 Chưa có video cho bài này<br>
+      <code style="font-size:0.75rem;background:#333;padding:2px 6px;border-radius:4px">${src}</code><br><br>
+      Upload file video vào thư mục <b>public/videos/</b>
+    </div>`;
+    infoEl.textContent = '';
+  });
+  infoEl.textContent = `📂 ${src}`;
+}
+
+function resetLesson() {
+  if(!currentLesson) return;
+  slotContents = new Array(currentLesson.steps.length).fill(null);
+  renderStepBank();
+  renderOrderSlots();
+  document.getElementById('btnCheck').disabled = true;
+  document.getElementById('jobFeedback').className = 'result-feedback';
+  document.getElementById('jobVideoBox').innerHTML = '<div class="vid-msg">🎯 Sắp xếp đúng thứ tự các bước để xem video</div>';
+}
+
+function updateJobProgress() {
+  const done = jobDone.size;
+  const total = LESSONS.length;
+  document.getElementById('jobDoneCount').textContent = done;
+  document.getElementById('jobTotalCount').textContent = total;
+  document.getElementById('jobProgressFill').style.width = (done/total*100)+'%';
 }
 
 // ===== TOAST =====
